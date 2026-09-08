@@ -1,0 +1,13 @@
+{
+  "commit": "c2f4dd81a4d14ee0d55d6b090857dda660fc4ec1",
+  "dirty": true,
+  "dirty_files": [
+    "?? .DS_Store",
+    "?? config/smoke.yaml",
+    "?? measurements/.DS_Store",
+    "?? measurements/20260908T063432Z__smoke/",
+    "?? measurements/20260908T063813Z__smoke/",
+    "?? measurements/20260908T065544Z__baseline/"
+  ],
+  "branch": "main"
+}

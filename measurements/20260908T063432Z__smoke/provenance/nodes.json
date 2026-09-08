@@ -1,0 +1,682 @@
+[
+  {
+    "host": "localhost:27017",
+    "buildInfo": {
+      "version": "8.3.7",
+      "versionArray": [
+        8,
+        3,
+        7,
+        0
+      ],
+      "gitVersion": "34eee04f34989abb7a3d91447976f033f4f74af2",
+      "modules": [],
+      "allocator": "system",
+      "javascriptEngine": "mozjs",
+      "sysinfo": "deprecated",
+      "openssl": {
+        "running": "Apple Secure Transport"
+      },
+      "buildEnvironment": {
+        "distmod": "",
+        "distarch": "arm64",
+        "cc": "/opt/homebrew/Cellar/llvm@19/19.1.7/bin/clang: Homebrew clang version 19.1.7\nTarget: arm64-apple-darwin23.6.0\nThread model: posix\nInstalledDir: /opt/homebrew/Cellar/llvm@19/19.1.7/bin\nConfiguration file: /opt/homebrew/etc/clang/arm64-apple-darwin23.cfg\n",
+        "ccflags": "-U_FORTIFY_SOURCE --sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk -O2 -Wno-unused-function -Wno-defaulted-function-deleted -Wno-unknown-pragmas -Wno-builtin-macro-redefined -Wno-unused-local-typedefs -Wno-unused-lambda-capture -Wno-deprecated-declarations -Wno-unused-const-variable -Wno-deprecated-this-capture -Wno-undefined-var-template -Wno-unused-private-field -Wno-potentially-evaluated-expression -DNDEBUG -DBOOST_ENABLE_ASSERT_DEBUG_HANDLER -DBOOST_FILESYSTEM_NO_CXX20_ATOMIC_REF -DBOOST_LOG_NO_SHORTHAND_NAMES -DBOOST_LOG_WITHOUT_THREAD_ATTR -DBOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS -DBOOST_SYSTEM_NO_DEPRECATED -DBOOST_THREAD_USES_DATETIME -DBOOST_THREAD_VERSION=5 -DBOOST_LOG_USE_NATIVE_SYSLOG -DABSL_FORCE_ALIGNED_ACCESS -DPCRE2_STATIC -DSAFEINT_USE_INTRINSICS=0 -Wunguarded-availability -Wno-enum-constexpr-conversion -fsized-deallocation -std=c++20 -g2 -Isrc -I$(GENDIR)/src -I$(GENDIR)/src/mongo/db/modules/enterprise/src -Isrc/mongo/db/modules/enterprise/src -Isrc/third_party/valgrind/include",
+        "cxx": "/opt/homebrew/Cellar/llvm@19/19.1.7/bin/clang++: Homebrew clang version 19.1.7\nTarget: arm64-apple-darwin23.6.0\nThread model: posix\nInstalledDir: /opt/homebrew/Cellar/llvm@19/19.1.7/bin\nConfiguration file: /opt/homebrew/etc/clang/arm64-apple-darwin23.cfg\n",
+        "cxxflags": "-U_FORTIFY_SOURCE --sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk -O2 -Wno-unused-function -Wno-defaulted-function-deleted -Wno-unknown-pragmas -Wno-builtin-macro-redefined -Wno-unused-local-typedefs -Wno-unused-lambda-capture -Wno-deprecated-declarations -Wno-unused-const-variable -Wno-deprecated-this-capture -Wno-undefined-var-template -Wno-unused-private-field -Wno-potentially-evaluated-expression -DNDEBUG -DBOOST_ENABLE_ASSERT_DEBUG_HANDLER -DBOOST_FILESYSTEM_NO_CXX20_ATOMIC_REF -DBOOST_LOG_NO_SHORTHAND_NAMES -DBOOST_LOG_WITHOUT_THREAD_ATTR -DBOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS -DBOOST_SYSTEM_NO_DEPRECATED -DBOOST_THREAD_USES_DATETIME -DBOOST_THREAD_VERSION=5 -DBOOST_LOG_USE_NATIVE_SYSLOG -DABSL_FORCE_ALIGNED_ACCESS -DPCRE2_STATIC -DSAFEINT_USE_INTRINSICS=0 -Wunguarded-availability -Wno-enum-constexpr-conversion -fsized-deallocation -std=c++20 -g2 -Isrc -I$(GENDIR)/src -I$(GENDIR)/src/mongo/db/modules/enterprise/src -Isrc/mongo/db/modules/enterprise/src -Isrc/third_party/valgrind/include",
+        "linkflags": "-lc++ -no-canonical-prefixes -fobjc-link-runtime --sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk -lresolv -framework CoreFoundation -framework Security",
+        "target_arch": "arm64",
+        "target_os": "macOS",
+        "cppdefines": "NDEBUG BOOST_ENABLE_ASSERT_DEBUG_HANDLER BOOST_FILESYSTEM_NO_CXX20_ATOMIC_REF BOOST_LOG_NO_SHORTHAND_NAMES BOOST_LOG_WITHOUT_THREAD_ATTR BOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS BOOST_SYSTEM_NO_DEPRECATED BOOST_THREAD_USES_DATETIME BOOST_THREAD_VERSION=5 BOOST_LOG_USE_NATIVE_SYSLOG ABSL_FORCE_ALIGNED_ACCESS PCRE2_STATIC SAFEINT_USE_INTRINSICS=0"
+      },
+      "bits": 64,
+      "debug": false,
+      "maxBsonObjectSize": 16777216,
+      "macOS": {
+        "osProductVersion": "26.6.2",
+        "osRelease": "25.6.0",
+        "version": "Darwin Kernel Version 25.6.0: Fri Jul 31 19:18:48 PDT 2026; root:xnu-12377.161.14~5/RELEASE_ARM64_T6020"
+      },
+      "storageEngines": [
+        "devnull",
+        "wiredTiger"
+      ],
+      "ok": 1.0,
+      "$clusterTime": {
+        "clusterTime": "Timestamp(1788849272, 1)",
+        "signature": {
+          "hash": "b'\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00'",
+          "keyId": 0
+        }
+      },
+      "operationTime": "Timestamp(1788849272, 1)"
+    },
+    "hostInfo": {
+      "system": {
+        "currentTime": "2026-09-08 06:34:33.211000",
+        "hostname": "MacBook-Pro-9.local",
+        "cpuAddrSize": 64,
+        "memSizeMB": 32768,
+        "memLimitMB": 32768,
+        "numCores": 12,
+        "numCoresAvailableToProcess": 12,
+        "numPhysicalCores": 12,
+        "numCpuSockets": 1,
+        "cpuArch": "arm64",
+        "numaEnabled": false,
+        "numNumaNodes": 1
+      },
+      "os": {
+        "type": "Darwin",
+        "name": "Mac OS X",
+        "version": "25.6.0"
+      },
+      "extra": {
+        "versionString": "Darwin Kernel Version 25.6.0: Fri Jul 31 19:18:48 PDT 2026; root:xnu-12377.161.14~5/RELEASE_ARM64_T6020",
+        "alwaysFullSync": 0,
+        "nfsAsync": 0,
+        "model": "Mac14,10",
+        "cpuString": "Apple M2 Pro",
+        "pageSize": 16384,
+        "scheduler": "edge"
+      },
+      "ok": 1.0,
+      "$clusterTime": {
+        "clusterTime": "Timestamp(1788849272, 1)",
+        "signature": {
+          "hash": "b'\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00'",
+          "keyId": 0
+        }
+      },
+      "operationTime": "Timestamp(1788849272, 1)"
+    },
+    "getCmdLineOpts": {
+      "argv": [
+        "mongod",
+        "--replSet",
+        "rs0",
+        "--port",
+        "27017",
+        "--dbpath",
+        "/Users/faisalnaveed/mongo-rs/n0",
+        "--bind_ip",
+        "127.0.0.1",
+        "--logpath",
+        "/Users/faisalnaveed/mongo-rs/n0/mongod.log"
+      ],
+      "parsed": {
+        "net": {
+          "bindIp": "127.0.0.1",
+          "port": 27017
+        },
+        "replication": {
+          "replSet": "rs0"
+        },
+        "storage": {
+          "dbPath": "/Users/faisalnaveed/mongo-rs/n0"
+        },
+        "systemLog": {
+          "destination": "file",
+          "path": "/Users/faisalnaveed/mongo-rs/n0/mongod.log"
+        }
+      },
+      "ok": 1.0,
+      "$clusterTime": {
+        "clusterTime": "Timestamp(1788849272, 1)",
+        "signature": {
+          "hash": "b'\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00'",
+          "keyId": 0
+        }
+      },
+      "operationTime": "Timestamp(1788849272, 1)"
+    },
+    "featureCompatibilityVersion": {
+      "featureCompatibilityVersion": {
+        "version": "8.3"
+      },
+      "ok": 1.0,
+      "$clusterTime": {
+        "clusterTime": "Timestamp(1788849272, 1)",
+        "signature": {
+          "hash": "b'\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00'",
+          "keyId": 0
+        }
+      },
+      "operationTime": "Timestamp(1788849272, 1)"
+    },
+    "writeConcernDefaults": {
+      "defaultReadConcern": {
+        "level": "local"
+      },
+      "defaultWriteConcern": {
+        "w": "majority",
+        "wtimeout": 0
+      },
+      "defaultWriteConcernSource": "implicit",
+      "defaultReadConcernSource": "implicit",
+      "localUpdateWallClockTime": "2026-09-08 06:34:33.212000",
+      "ok": 1.0,
+      "$clusterTime": {
+        "clusterTime": "Timestamp(1788849272, 1)",
+        "signature": {
+          "hash": "b'\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00'",
+          "keyId": 0
+        }
+      },
+      "operationTime": "Timestamp(1788849272, 1)"
+    },
+    "wcMajorityJournalDefault": {
+      "__error__": "OperationFailure: no option found to get, full error: {'ok': 0.0, 'errmsg': 'no option found to get', 'code': 72, 'codeName': 'InvalidOptions', '$clusterTime': {'clusterTime': Timestamp(1788849272, 1), 'signature': {'hash': b'\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00', 'keyId': 0}}, 'operationTime': Timestamp(1788849272, 1)}"
+    }
+  },
+  {
+    "host": "localhost:27018",
+    "buildInfo": {
+      "version": "8.3.7",
+      "versionArray": [
+        8,
+        3,
+        7,
+        0
+      ],
+      "gitVersion": "34eee04f34989abb7a3d91447976f033f4f74af2",
+      "modules": [],
+      "allocator": "system",
+      "javascriptEngine": "mozjs",
+      "sysinfo": "deprecated",
+      "openssl": {
+        "running": "Apple Secure Transport"
+      },
+      "buildEnvironment": {
+        "distmod": "",
+        "distarch": "arm64",
+        "cc": "/opt/homebrew/Cellar/llvm@19/19.1.7/bin/clang: Homebrew clang version 19.1.7\nTarget: arm64-apple-darwin23.6.0\nThread model: posix\nInstalledDir: /opt/homebrew/Cellar/llvm@19/19.1.7/bin\nConfiguration file: /opt/homebrew/etc/clang/arm64-apple-darwin23.cfg\n",
+        "ccflags": "-U_FORTIFY_SOURCE --sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk -O2 -Wno-unused-function -Wno-defaulted-function-deleted -Wno-unknown-pragmas -Wno-builtin-macro-redefined -Wno-unused-local-typedefs -Wno-unused-lambda-capture -Wno-deprecated-declarations -Wno-unused-const-variable -Wno-deprecated-this-capture -Wno-undefined-var-template -Wno-unused-private-field -Wno-potentially-evaluated-expression -DNDEBUG -DBOOST_ENABLE_ASSERT_DEBUG_HANDLER -DBOOST_FILESYSTEM_NO_CXX20_ATOMIC_REF -DBOOST_LOG_NO_SHORTHAND_NAMES -DBOOST_LOG_WITHOUT_THREAD_ATTR -DBOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS -DBOOST_SYSTEM_NO_DEPRECATED -DBOOST_THREAD_USES_DATETIME -DBOOST_THREAD_VERSION=5 -DBOOST_LOG_USE_NATIVE_SYSLOG -DABSL_FORCE_ALIGNED_ACCESS -DPCRE2_STATIC -DSAFEINT_USE_INTRINSICS=0 -Wunguarded-availability -Wno-enum-constexpr-conversion -fsized-deallocation -std=c++20 -g2 -Isrc -I$(GENDIR)/src -I$(GENDIR)/src/mongo/db/modules/enterprise/src -Isrc/mongo/db/modules/enterprise/src -Isrc/third_party/valgrind/include",
+        "cxx": "/opt/homebrew/Cellar/llvm@19/19.1.7/bin/clang++: Homebrew clang version 19.1.7\nTarget: arm64-apple-darwin23.6.0\nThread model: posix\nInstalledDir: /opt/homebrew/Cellar/llvm@19/19.1.7/bin\nConfiguration file: /opt/homebrew/etc/clang/arm64-apple-darwin23.cfg\n",
+        "cxxflags": "-U_FORTIFY_SOURCE --sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk -O2 -Wno-unused-function -Wno-defaulted-function-deleted -Wno-unknown-pragmas -Wno-builtin-macro-redefined -Wno-unused-local-typedefs -Wno-unused-lambda-capture -Wno-deprecated-declarations -Wno-unused-const-variable -Wno-deprecated-this-capture -Wno-undefined-var-template -Wno-unused-private-field -Wno-potentially-evaluated-expression -DNDEBUG -DBOOST_ENABLE_ASSERT_DEBUG_HANDLER -DBOOST_FILESYSTEM_NO_CXX20_ATOMIC_REF -DBOOST_LOG_NO_SHORTHAND_NAMES -DBOOST_LOG_WITHOUT_THREAD_ATTR -DBOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS -DBOOST_SYSTEM_NO_DEPRECATED -DBOOST_THREAD_USES_DATETIME -DBOOST_THREAD_VERSION=5 -DBOOST_LOG_USE_NATIVE_SYSLOG -DABSL_FORCE_ALIGNED_ACCESS -DPCRE2_STATIC -DSAFEINT_USE_INTRINSICS=0 -Wunguarded-availability -Wno-enum-constexpr-conversion -fsized-deallocation -std=c++20 -g2 -Isrc -I$(GENDIR)/src -I$(GENDIR)/src/mongo/db/modules/enterprise/src -Isrc/mongo/db/modules/enterprise/src -Isrc/third_party/valgrind/include",
+        "linkflags": "-lc++ -no-canonical-prefixes -fobjc-link-runtime --sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk -lresolv -framework CoreFoundation -framework Security",
+        "target_arch": "arm64",
+        "target_os": "macOS",
+        "cppdefines": "NDEBUG BOOST_ENABLE_ASSERT_DEBUG_HANDLER BOOST_FILESYSTEM_NO_CXX20_ATOMIC_REF BOOST_LOG_NO_SHORTHAND_NAMES BOOST_LOG_WITHOUT_THREAD_ATTR BOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS BOOST_SYSTEM_NO_DEPRECATED BOOST_THREAD_USES_DATETIME BOOST_THREAD_VERSION=5 BOOST_LOG_USE_NATIVE_SYSLOG ABSL_FORCE_ALIGNED_ACCESS PCRE2_STATIC SAFEINT_USE_INTRINSICS=0"
+      },
+      "bits": 64,
+      "debug": false,
+      "maxBsonObjectSize": 16777216,
+      "macOS": {
+        "osProductVersion": "26.6.2",
+        "osRelease": "25.6.0",
+        "version": "Darwin Kernel Version 25.6.0: Fri Jul 31 19:18:48 PDT 2026; root:xnu-12377.161.14~5/RELEASE_ARM64_T6020"
+      },
+      "storageEngines": [
+        "devnull",
+        "wiredTiger"
+      ],
+      "ok": 1.0,
+      "$clusterTime": {
+        "clusterTime": "Timestamp(1788849272, 1)",
+        "signature": {
+          "hash": "b'\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00'",
+          "keyId": 0
+        }
+      },
+      "operationTime": "Timestamp(1788849272, 1)"
+    },
+    "hostInfo": {
+      "system": {
+        "currentTime": "2026-09-08 06:34:33.215000",
+        "hostname": "MacBook-Pro-9.local:27018",
+        "cpuAddrSize": 64,
+        "memSizeMB": 32768,
+        "memLimitMB": 32768,
+        "numCores": 12,
+        "numCoresAvailableToProcess": 12,
+        "numPhysicalCores": 12,
+        "numCpuSockets": 1,
+        "cpuArch": "arm64",
+        "numaEnabled": false,
+        "numNumaNodes": 1
+      },
+      "os": {
+        "type": "Darwin",
+        "name": "Mac OS X",
+        "version": "25.6.0"
+      },
+      "extra": {
+        "versionString": "Darwin Kernel Version 25.6.0: Fri Jul 31 19:18:48 PDT 2026; root:xnu-12377.161.14~5/RELEASE_ARM64_T6020",
+        "alwaysFullSync": 0,
+        "nfsAsync": 0,
+        "model": "Mac14,10",
+        "cpuString": "Apple M2 Pro",
+        "pageSize": 16384,
+        "scheduler": "edge"
+      },
+      "ok": 1.0,
+      "$clusterTime": {
+        "clusterTime": "Timestamp(1788849272, 1)",
+        "signature": {
+          "hash": "b'\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00'",
+          "keyId": 0
+        }
+      },
+      "operationTime": "Timestamp(1788849272, 1)"
+    },
+    "getCmdLineOpts": {
+      "argv": [
+        "mongod",
+        "--replSet",
+        "rs0",
+        "--port",
+        "27018",
+        "--dbpath",
+        "/Users/faisalnaveed/mongo-rs/n1",
+        "--bind_ip",
+        "127.0.0.1",
+        "--logpath",
+        "/Users/faisalnaveed/mongo-rs/n1/mongod.log"
+      ],
+      "parsed": {
+        "net": {
+          "bindIp": "127.0.0.1",
+          "port": 27018
+        },
+        "replication": {
+          "replSet": "rs0"
+        },
+        "storage": {
+          "dbPath": "/Users/faisalnaveed/mongo-rs/n1"
+        },
+        "systemLog": {
+          "destination": "file",
+          "path": "/Users/faisalnaveed/mongo-rs/n1/mongod.log"
+        }
+      },
+      "ok": 1.0,
+      "$clusterTime": {
+        "clusterTime": "Timestamp(1788849272, 1)",
+        "signature": {
+          "hash": "b'\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00'",
+          "keyId": 0
+        }
+      },
+      "operationTime": "Timestamp(1788849272, 1)"
+    },
+    "featureCompatibilityVersion": {
+      "featureCompatibilityVersion": {
+        "version": "8.3"
+      },
+      "ok": 1.0,
+      "$clusterTime": {
+        "clusterTime": "Timestamp(1788849272, 1)",
+        "signature": {
+          "hash": "b'\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00'",
+          "keyId": 0
+        }
+      },
+      "operationTime": "Timestamp(1788849272, 1)"
+    },
+    "writeConcernDefaults": {
+      "defaultReadConcern": {
+        "level": "local"
+      },
+      "defaultWriteConcern": {
+        "w": "majority",
+        "wtimeout": 0
+      },
+      "defaultWriteConcernSource": "implicit",
+      "defaultReadConcernSource": "implicit",
+      "localUpdateWallClockTime": "2026-09-08 06:34:33.216000",
+      "ok": 1.0,
+      "$clusterTime": {
+        "clusterTime": "Timestamp(1788849272, 1)",
+        "signature": {
+          "hash": "b'\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00'",
+          "keyId": 0
+        }
+      },
+      "operationTime": "Timestamp(1788849272, 1)"
+    },
+    "wcMajorityJournalDefault": {
+      "__error__": "OperationFailure: no option found to get, full error: {'ok': 0.0, 'errmsg': 'no option found to get', 'code': 72, 'codeName': 'InvalidOptions', '$clusterTime': {'clusterTime': Timestamp(1788849272, 1), 'signature': {'hash': b'\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00', 'keyId': 0}}, 'operationTime': Timestamp(1788849272, 1)}"
+    }
+  },
+  {
+    "host": "localhost:27019",
+    "buildInfo": {
+      "version": "8.3.7",
+      "versionArray": [
+        8,
+        3,
+        7,
+        0
+      ],
+      "gitVersion": "34eee04f34989abb7a3d91447976f033f4f74af2",
+      "modules": [],
+      "allocator": "system",
+      "javascriptEngine": "mozjs",
+      "sysinfo": "deprecated",
+      "openssl": {
+        "running": "Apple Secure Transport"
+      },
+      "buildEnvironment": {
+        "distmod": "",
+        "distarch": "arm64",
+        "cc": "/opt/homebrew/Cellar/llvm@19/19.1.7/bin/clang: Homebrew clang version 19.1.7\nTarget: arm64-apple-darwin23.6.0\nThread model: posix\nInstalledDir: /opt/homebrew/Cellar/llvm@19/19.1.7/bin\nConfiguration file: /opt/homebrew/etc/clang/arm64-apple-darwin23.cfg\n",
+        "ccflags": "-U_FORTIFY_SOURCE --sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk -O2 -Wno-unused-function -Wno-defaulted-function-deleted -Wno-unknown-pragmas -Wno-builtin-macro-redefined -Wno-unused-local-typedefs -Wno-unused-lambda-capture -Wno-deprecated-declarations -Wno-unused-const-variable -Wno-deprecated-this-capture -Wno-undefined-var-template -Wno-unused-private-field -Wno-potentially-evaluated-expression -DNDEBUG -DBOOST_ENABLE_ASSERT_DEBUG_HANDLER -DBOOST_FILESYSTEM_NO_CXX20_ATOMIC_REF -DBOOST_LOG_NO_SHORTHAND_NAMES -DBOOST_LOG_WITHOUT_THREAD_ATTR -DBOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS -DBOOST_SYSTEM_NO_DEPRECATED -DBOOST_THREAD_USES_DATETIME -DBOOST_THREAD_VERSION=5 -DBOOST_LOG_USE_NATIVE_SYSLOG -DABSL_FORCE_ALIGNED_ACCESS -DPCRE2_STATIC -DSAFEINT_USE_INTRINSICS=0 -Wunguarded-availability -Wno-enum-constexpr-conversion -fsized-deallocation -std=c++20 -g2 -Isrc -I$(GENDIR)/src -I$(GENDIR)/src/mongo/db/modules/enterprise/src -Isrc/mongo/db/modules/enterprise/src -Isrc/third_party/valgrind/include",
+        "cxx": "/opt/homebrew/Cellar/llvm@19/19.1.7/bin/clang++: Homebrew clang version 19.1.7\nTarget: arm64-apple-darwin23.6.0\nThread model: posix\nInstalledDir: /opt/homebrew/Cellar/llvm@19/19.1.7/bin\nConfiguration file: /opt/homebrew/etc/clang/arm64-apple-darwin23.cfg\n",
+        "cxxflags": "-U_FORTIFY_SOURCE --sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk -O2 -Wno-unused-function -Wno-defaulted-function-deleted -Wno-unknown-pragmas -Wno-builtin-macro-redefined -Wno-unused-local-typedefs -Wno-unused-lambda-capture -Wno-deprecated-declarations -Wno-unused-const-variable -Wno-deprecated-this-capture -Wno-undefined-var-template -Wno-unused-private-field -Wno-potentially-evaluated-expression -DNDEBUG -DBOOST_ENABLE_ASSERT_DEBUG_HANDLER -DBOOST_FILESYSTEM_NO_CXX20_ATOMIC_REF -DBOOST_LOG_NO_SHORTHAND_NAMES -DBOOST_LOG_WITHOUT_THREAD_ATTR -DBOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS -DBOOST_SYSTEM_NO_DEPRECATED -DBOOST_THREAD_USES_DATETIME -DBOOST_THREAD_VERSION=5 -DBOOST_LOG_USE_NATIVE_SYSLOG -DABSL_FORCE_ALIGNED_ACCESS -DPCRE2_STATIC -DSAFEINT_USE_INTRINSICS=0 -Wunguarded-availability -Wno-enum-constexpr-conversion -fsized-deallocation -std=c++20 -g2 -Isrc -I$(GENDIR)/src -I$(GENDIR)/src/mongo/db/modules/enterprise/src -Isrc/mongo/db/modules/enterprise/src -Isrc/third_party/valgrind/include",
+        "linkflags": "-lc++ -no-canonical-prefixes -fobjc-link-runtime --sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk -lresolv -framework CoreFoundation -framework Security",
+        "target_arch": "arm64",
+        "target_os": "macOS",
+        "cppdefines": "NDEBUG BOOST_ENABLE_ASSERT_DEBUG_HANDLER BOOST_FILESYSTEM_NO_CXX20_ATOMIC_REF BOOST_LOG_NO_SHORTHAND_NAMES BOOST_LOG_WITHOUT_THREAD_ATTR BOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS BOOST_SYSTEM_NO_DEPRECATED BOOST_THREAD_USES_DATETIME BOOST_THREAD_VERSION=5 BOOST_LOG_USE_NATIVE_SYSLOG ABSL_FORCE_ALIGNED_ACCESS PCRE2_STATIC SAFEINT_USE_INTRINSICS=0"
+      },
+      "bits": 64,
+      "debug": false,
+      "maxBsonObjectSize": 16777216,
+      "macOS": {
+        "osProductVersion": "26.6.2",
+        "osRelease": "25.6.0",
+        "version": "Darwin Kernel Version 25.6.0: Fri Jul 31 19:18:48 PDT 2026; root:xnu-12377.161.14~5/RELEASE_ARM64_T6020"
+      },
+      "storageEngines": [
+        "devnull",
+        "wiredTiger"
+      ],
+      "ok": 1.0,
+      "$clusterTime": {
+        "clusterTime": "Timestamp(1788849272, 1)",
+        "signature": {
+          "hash": "b'\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00'",
+          "keyId": 0
+        }
+      },
+      "operationTime": "Timestamp(1788849272, 1)"
+    },
+    "hostInfo": {
+      "system": {
+        "currentTime": "2026-09-08 06:34:33.219000",
+        "hostname": "MacBook-Pro-9.local:27019",
+        "cpuAddrSize": 64,
+        "memSizeMB": 32768,
+        "memLimitMB": 32768,
+        "numCores": 12,
+        "numCoresAvailableToProcess": 12,
+        "numPhysicalCores": 12,
+        "numCpuSockets": 1,
+        "cpuArch": "arm64",
+        "numaEnabled": false,
+        "numNumaNodes": 1
+      },
+      "os": {
+        "type": "Darwin",
+        "name": "Mac OS X",
+        "version": "25.6.0"
+      },
+      "extra": {
+        "versionString": "Darwin Kernel Version 25.6.0: Fri Jul 31 19:18:48 PDT 2026; root:xnu-12377.161.14~5/RELEASE_ARM64_T6020",
+        "alwaysFullSync": 0,
+        "nfsAsync": 0,
+        "model": "Mac14,10",
+        "cpuString": "Apple M2 Pro",
+        "pageSize": 16384,
+        "scheduler": "edge"
+      },
+      "ok": 1.0,
+      "$clusterTime": {
+        "clusterTime": "Timestamp(1788849272, 1)",
+        "signature": {
+          "hash": "b'\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00'",
+          "keyId": 0
+        }
+      },
+      "operationTime": "Timestamp(1788849272, 1)"
+    },
+    "getCmdLineOpts": {
+      "argv": [
+        "mongod",
+        "--replSet",
+        "rs0",
+        "--port",
+        "27019",
+        "--dbpath",
+        "/Users/faisalnaveed/mongo-rs/n2",
+        "--bind_ip",
+        "127.0.0.1",
+        "--logpath",
+        "/Users/faisalnaveed/mongo-rs/n2/mongod.log"
+      ],
+      "parsed": {
+        "net": {
+          "bindIp": "127.0.0.1",
+          "port": 27019
+        },
+        "replication": {
+          "replSet": "rs0"
+        },
+        "storage": {
+          "dbPath": "/Users/faisalnaveed/mongo-rs/n2"
+        },
+        "systemLog": {
+          "destination": "file",
+          "path": "/Users/faisalnaveed/mongo-rs/n2/mongod.log"
+        }
+      },
+      "ok": 1.0,
+      "$clusterTime": {
+        "clusterTime": "Timestamp(1788849272, 1)",
+        "signature": {
+          "hash": "b'\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00'",
+          "keyId": 0
+        }
+      },
+      "operationTime": "Timestamp(1788849272, 1)"
+    },
+    "featureCompatibilityVersion": {
+      "featureCompatibilityVersion": {
+        "version": "8.3"
+      },
+      "ok": 1.0,
+      "$clusterTime": {
+        "clusterTime": "Timestamp(1788849272, 1)",
+        "signature": {
+          "hash": "b'\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00'",
+          "keyId": 0
+        }
+      },
+      "operationTime": "Timestamp(1788849272, 1)"
+    },
+    "writeConcernDefaults": {
+      "defaultReadConcern": {
+        "level": "local"
+      },
+      "defaultWriteConcern": {
+        "w": "majority",
+        "wtimeout": 0
+      },
+      "defaultWriteConcernSource": "implicit",
+      "defaultReadConcernSource": "implicit",
+      "localUpdateWallClockTime": "2026-09-08 06:34:33.220000",
+      "ok": 1.0,
+      "$clusterTime": {
+        "clusterTime": "Timestamp(1788849272, 1)",
+        "signature": {
+          "hash": "b'\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00'",
+          "keyId": 0
+        }
+      },
+      "operationTime": "Timestamp(1788849272, 1)"
+    },
+    "wcMajorityJournalDefault": {
+      "__error__": "OperationFailure: no option found to get, full error: {'ok': 0.0, 'errmsg': 'no option found to get', 'code': 72, 'codeName': 'InvalidOptions', '$clusterTime': {'clusterTime': Timestamp(1788849272, 1), 'signature': {'hash': b'\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00', 'keyId': 0}}, 'operationTime': Timestamp(1788849272, 1)}"
+    }
+  },
+  {
+    "host": "localhost:27020",
+    "buildInfo": {
+      "version": "8.3.7",
+      "versionArray": [
+        8,
+        3,
+        7,
+        0
+      ],
+      "gitVersion": "34eee04f34989abb7a3d91447976f033f4f74af2",
+      "modules": [],
+      "allocator": "system",
+      "javascriptEngine": "mozjs",
+      "sysinfo": "deprecated",
+      "openssl": {
+        "running": "Apple Secure Transport"
+      },
+      "buildEnvironment": {
+        "distmod": "",
+        "distarch": "arm64",
+        "cc": "/opt/homebrew/Cellar/llvm@19/19.1.7/bin/clang: Homebrew clang version 19.1.7\nTarget: arm64-apple-darwin23.6.0\nThread model: posix\nInstalledDir: /opt/homebrew/Cellar/llvm@19/19.1.7/bin\nConfiguration file: /opt/homebrew/etc/clang/arm64-apple-darwin23.cfg\n",
+        "ccflags": "-U_FORTIFY_SOURCE --sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk -O2 -Wno-unused-function -Wno-defaulted-function-deleted -Wno-unknown-pragmas -Wno-builtin-macro-redefined -Wno-unused-local-typedefs -Wno-unused-lambda-capture -Wno-deprecated-declarations -Wno-unused-const-variable -Wno-deprecated-this-capture -Wno-undefined-var-template -Wno-unused-private-field -Wno-potentially-evaluated-expression -DNDEBUG -DBOOST_ENABLE_ASSERT_DEBUG_HANDLER -DBOOST_FILESYSTEM_NO_CXX20_ATOMIC_REF -DBOOST_LOG_NO_SHORTHAND_NAMES -DBOOST_LOG_WITHOUT_THREAD_ATTR -DBOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS -DBOOST_SYSTEM_NO_DEPRECATED -DBOOST_THREAD_USES_DATETIME -DBOOST_THREAD_VERSION=5 -DBOOST_LOG_USE_NATIVE_SYSLOG -DABSL_FORCE_ALIGNED_ACCESS -DPCRE2_STATIC -DSAFEINT_USE_INTRINSICS=0 -Wunguarded-availability -Wno-enum-constexpr-conversion -fsized-deallocation -std=c++20 -g2 -Isrc -I$(GENDIR)/src -I$(GENDIR)/src/mongo/db/modules/enterprise/src -Isrc/mongo/db/modules/enterprise/src -Isrc/third_party/valgrind/include",
+        "cxx": "/opt/homebrew/Cellar/llvm@19/19.1.7/bin/clang++: Homebrew clang version 19.1.7\nTarget: arm64-apple-darwin23.6.0\nThread model: posix\nInstalledDir: /opt/homebrew/Cellar/llvm@19/19.1.7/bin\nConfiguration file: /opt/homebrew/etc/clang/arm64-apple-darwin23.cfg\n",
+        "cxxflags": "-U_FORTIFY_SOURCE --sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk -O2 -Wno-unused-function -Wno-defaulted-function-deleted -Wno-unknown-pragmas -Wno-builtin-macro-redefined -Wno-unused-local-typedefs -Wno-unused-lambda-capture -Wno-deprecated-declarations -Wno-unused-const-variable -Wno-deprecated-this-capture -Wno-undefined-var-template -Wno-unused-private-field -Wno-potentially-evaluated-expression -DNDEBUG -DBOOST_ENABLE_ASSERT_DEBUG_HANDLER -DBOOST_FILESYSTEM_NO_CXX20_ATOMIC_REF -DBOOST_LOG_NO_SHORTHAND_NAMES -DBOOST_LOG_WITHOUT_THREAD_ATTR -DBOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS -DBOOST_SYSTEM_NO_DEPRECATED -DBOOST_THREAD_USES_DATETIME -DBOOST_THREAD_VERSION=5 -DBOOST_LOG_USE_NATIVE_SYSLOG -DABSL_FORCE_ALIGNED_ACCESS -DPCRE2_STATIC -DSAFEINT_USE_INTRINSICS=0 -Wunguarded-availability -Wno-enum-constexpr-conversion -fsized-deallocation -std=c++20 -g2 -Isrc -I$(GENDIR)/src -I$(GENDIR)/src/mongo/db/modules/enterprise/src -Isrc/mongo/db/modules/enterprise/src -Isrc/third_party/valgrind/include",
+        "linkflags": "-lc++ -no-canonical-prefixes -fobjc-link-runtime --sysroot=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk -lresolv -framework CoreFoundation -framework Security",
+        "target_arch": "arm64",
+        "target_os": "macOS",
+        "cppdefines": "NDEBUG BOOST_ENABLE_ASSERT_DEBUG_HANDLER BOOST_FILESYSTEM_NO_CXX20_ATOMIC_REF BOOST_LOG_NO_SHORTHAND_NAMES BOOST_LOG_WITHOUT_THREAD_ATTR BOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS BOOST_SYSTEM_NO_DEPRECATED BOOST_THREAD_USES_DATETIME BOOST_THREAD_VERSION=5 BOOST_LOG_USE_NATIVE_SYSLOG ABSL_FORCE_ALIGNED_ACCESS PCRE2_STATIC SAFEINT_USE_INTRINSICS=0"
+      },
+      "bits": 64,
+      "debug": false,
+      "maxBsonObjectSize": 16777216,
+      "macOS": {
+        "osProductVersion": "26.6.2",
+        "osRelease": "25.6.0",
+        "version": "Darwin Kernel Version 25.6.0: Fri Jul 31 19:18:48 PDT 2026; root:xnu-12377.161.14~5/RELEASE_ARM64_T6020"
+      },
+      "storageEngines": [
+        "devnull",
+        "wiredTiger"
+      ],
+      "ok": 1.0,
+      "$clusterTime": {
+        "clusterTime": "Timestamp(1788849272, 1)",
+        "signature": {
+          "hash": "b'\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00'",
+          "keyId": 0
+        }
+      },
+      "operationTime": "Timestamp(1788849272, 1)"
+    },
+    "hostInfo": {
+      "system": {
+        "currentTime": "2026-09-08 06:34:33.223000",
+        "hostname": "MacBook-Pro-9.local:27020",
+        "cpuAddrSize": 64,
+        "memSizeMB": 32768,
+        "memLimitMB": 32768,
+        "numCores": 12,
+        "numCoresAvailableToProcess": 12,
+        "numPhysicalCores": 12,
+        "numCpuSockets": 1,
+        "cpuArch": "arm64",
+        "numaEnabled": false,
+        "numNumaNodes": 1
+      },
+      "os": {
+        "type": "Darwin",
+        "name": "Mac OS X",
+        "version": "25.6.0"
+      },
+      "extra": {
+        "versionString": "Darwin Kernel Version 25.6.0: Fri Jul 31 19:18:48 PDT 2026; root:xnu-12377.161.14~5/RELEASE_ARM64_T6020",
+        "alwaysFullSync": 0,
+        "nfsAsync": 0,
+        "model": "Mac14,10",
+        "cpuString": "Apple M2 Pro",
+        "pageSize": 16384,
+        "scheduler": "edge"
+      },
+      "ok": 1.0,
+      "$clusterTime": {
+        "clusterTime": "Timestamp(1788849272, 1)",
+        "signature": {
+          "hash": "b'\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00'",
+          "keyId": 0
+        }
+      },
+      "operationTime": "Timestamp(1788849272, 1)"
+    },
+    "getCmdLineOpts": {
+      "argv": [
+        "mongod",
+        "--replSet",
+        "rs0",
+        "--port",
+        "27020",
+        "--dbpath",
+        "/Users/faisalnaveed/mongo-rs/n3",
+        "--bind_ip",
+        "127.0.0.1",
+        "--logpath",
+        "/Users/faisalnaveed/mongo-rs/n3/mongod.log"
+      ],
+      "parsed": {
+        "net": {
+          "bindIp": "127.0.0.1",
+          "port": 27020
+        },
+        "replication": {
+          "replSet": "rs0"
+        },
+        "storage": {
+          "dbPath": "/Users/faisalnaveed/mongo-rs/n3"
+        },
+        "systemLog": {
+          "destination": "file",
+          "path": "/Users/faisalnaveed/mongo-rs/n3/mongod.log"
+        }
+      },
+      "ok": 1.0,
+      "$clusterTime": {
+        "clusterTime": "Timestamp(1788849272, 1)",
+        "signature": {
+          "hash": "b'\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00'",
+          "keyId": 0
+        }
+      },
+      "operationTime": "Timestamp(1788849272, 1)"
+    },
+    "featureCompatibilityVersion": {
+      "featureCompatibilityVersion": {
+        "version": "8.3"
+      },
+      "ok": 1.0,
+      "$clusterTime": {
+        "clusterTime": "Timestamp(1788849272, 1)",
+        "signature": {
+          "hash": "b'\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00'",
+          "keyId": 0
+        }
+      },
+      "operationTime": "Timestamp(1788849272, 1)"
+    },
+    "writeConcernDefaults": {
+      "defaultReadConcern": {
+        "level": "local"
+      },
+      "defaultWriteConcern": {
+        "w": "majority",
+        "wtimeout": 0
+      },
+      "defaultWriteConcernSource": "implicit",
+      "defaultReadConcernSource": "implicit",
+      "localUpdateWallClockTime": "2026-09-08 06:34:33.224000",
+      "ok": 1.0,
+      "$clusterTime": {
+        "clusterTime": "Timestamp(1788849272, 1)",
+        "signature": {
+          "hash": "b'\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00'",
+          "keyId": 0
+        }
+      },
+      "operationTime": "Timestamp(1788849272, 1)"
+    },
+    "wcMajorityJournalDefault": {
+      "__error__": "OperationFailure: no option found to get, full error: {'ok': 0.0, 'errmsg': 'no option found to get', 'code': 72, 'codeName': 'InvalidOptions', '$clusterTime': {'clusterTime': Timestamp(1788849272, 1), 'signature': {'hash': b'\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00', 'keyId': 0}}, 'operationTime': Timestamp(1788849272, 1)}"
+    }
+  }
+]

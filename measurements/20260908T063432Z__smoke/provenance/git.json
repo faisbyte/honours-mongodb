@@ -1,0 +1,9 @@
+{
+  "commit": "91c0469d354291a0ba780cb54e47abf94e490656",
+  "dirty": true,
+  "dirty_files": [
+    "?? config/smoke.yaml",
+    "?? measurements/20260908T063432Z__smoke/"
+  ],
+  "branch": "main"
+}
