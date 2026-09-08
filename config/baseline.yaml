@@ -89,5 +89,5 @@ capture:
   compress_output: true         # gzip the jsonl files at end of run
 
 analysis:
-  bucket_us: 100                # histogram bucket width for the freshness curve
+  bucket_us: 500                # histogram bucket width for the freshness curve
   min_samples_per_bucket: 30
