@@ -1,0 +1,5 @@
+pymongo>=4.9
+PyYAML>=6.0
+pandas>=2.2
+pyarrow>=16.0
+matplotlib>=3.8
