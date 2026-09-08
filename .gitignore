@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+.venv/
+# Derived artefacts are cheap to regenerate; raw .jsonl.gz IS committed.
+measurements/*/derived/
