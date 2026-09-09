@@ -2,11 +2,6 @@
 
 Client-observed replica freshness measurement for MongoDB replica sets.
 
-Method follows Wada, Fekete, Zhao, Lee and Liu, *Data Consistency Properties and
-the Trade-offs in Commercial Cloud Storages: the Consumers' Perspective*,
-CIDR 2011. The central artefact is their Figure 2: the probability that a read
-returns the freshest value, as a function of time elapsed since the write.
-
 ## Install
 
 ```bash
