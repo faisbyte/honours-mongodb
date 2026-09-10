@@ -1,0 +1,112 @@
+{
+  "run_id": "20260910T035527Z__baseline-w1",
+  "started_utc": "20260910T035527Z",
+  "finished_utc": "2026-09-10T03:58:10.581586+00:00",
+  "clock_anchor": {
+    "wall_ns": 1789012528276262000,
+    "perf_ns": 259720354442500
+  },
+  "clock_note": "All t_*_ns are time.perf_counter_ns() from a single client process, so they share one monotonic clock and are free of inter-host skew. Map to wall clock with wall = clock_anchor.wall_ns + (t - clock_anchor.perf_ns).",
+  "config": {
+    "experiment": {
+      "name": "baseline-w1",
+      "description": "Client-observed freshness curve on a local 4-node MongoDB replica set, following the write-then-poll methodology of Wada et al., CIDR 2011.\n",
+      "seed": 20260908
+    },
+    "replica_set": {
+      "name": "rs0",
+      "seed_hosts": [
+        "localhost:27017",
+        "localhost:27018",
+        "localhost:27019",
+        "localhost:27020"
+      ]
+    },
+    "workload": {
+      "database": "freshness",
+      "collection": "probe",
+      "doc_key": "probe-1",
+      "payload_bytes": 14,
+      "cycles": 300,
+      "warmup_cycles": 20,
+      "poll_window_ms": 30,
+      "inter_sweep_us": 200,
+      "quiesce_ms": 500,
+      "write_concern": {
+        "w": 1,
+        "j": null,
+        "wtimeout_ms": 5000
+      }
+    },
+    "targets": [
+      {
+        "id": "direct-27017",
+        "kind": "direct",
+        "host": "localhost:27017",
+        "read_preference": "primaryPreferred",
+        "read_concern": "local"
+      },
+      {
+        "id": "direct-27018",
+        "kind": "direct",
+        "host": "localhost:27018",
+        "read_preference": "secondaryPreferred",
+        "read_concern": "local"
+      },
+      {
+        "id": "direct-27019",
+        "kind": "direct",
+        "host": "localhost:27019",
+        "read_preference": "secondaryPreferred",
+        "read_concern": "local"
+      },
+      {
+        "id": "direct-27020",
+        "kind": "direct",
+        "host": "localhost:27020",
+        "read_preference": "secondaryPreferred",
+        "read_concern": "local"
+      },
+      {
+        "id": "rs-primary-local",
+        "kind": "replicaset",
+        "read_preference": "primary",
+        "read_concern": "local"
+      },
+      {
+        "id": "rs-secondary-local",
+        "kind": "replicaset",
+        "read_preference": "secondary",
+        "read_concern": "local"
+      },
+      {
+        "id": "rs-secondary-majority",
+        "kind": "replicaset",
+        "read_preference": "secondary",
+        "read_concern": "majority"
+      },
+      {
+        "id": "rs-secondary-causal",
+        "kind": "replicaset",
+        "read_preference": "secondary",
+        "read_concern": "local",
+        "causal_consistency": true
+      }
+    ],
+    "capture": {
+      "operation_time": true,
+      "repl_status_per_cycle": true,
+      "repl_status_continuous": false,
+      "compress_output": true
+    },
+    "analysis": {
+      "bucket_us": 200,
+      "min_samples_per_bucket": 30
+    }
+  },
+  "files": {
+    "writes.jsonl": "one record per write",
+    "reads.jsonl": "one record per read",
+    "repl_samples.jsonl": "replSetGetStatus at cycle boundaries"
+  }
+}

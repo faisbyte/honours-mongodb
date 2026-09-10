@@ -1,0 +1,10 @@
+{
+  "commit": "143c5ea3627a52f14a0c1042f94727a1a927077d",
+  "dirty": true,
+  "dirty_files": [
+    "M harness/collect.py",
+    "?? measurements/20260908T063813Z__smoke/.DS_Store",
+    "?? measurements/20260910T035527Z__baseline-w1/"
+  ],
+  "branch": "main"
+}

@@ -171,6 +171,8 @@ def do_write(db, coll_name: str, key: str, seq: int, pad: str,
         "n": reply.get("n"),
         "nModified": reply.get("nModified"),
         "operationTime": {"t": op_time.time, "i": op_time.inc} if op_time else None,
+        "_raw_op_time": op_time,
+        "_raw_cluster_time": reply.get("$clusterTime"),
         "writeConcernError": reply.get("writeConcernError"),
         "error": err,
     }
@@ -352,6 +354,16 @@ def run(cfg: dict, cfg_path: Path, out_root: Path, do_calibrate: bool) -> Path:
             wrec.update({"cycle": cycle, "primary": primary,
                          "write_concern": wc_doc,
                          "warmup": cycle < w["warmup_cycles"]})
+
+            raw_op = wrec.pop("_raw_op_time", None)
+            raw_ct = wrec.pop("_raw_cluster_time", None)
+            for t in targets:
+                if t.session is not None:
+                    if raw_ct is not None:
+                        t.session.advance_cluster_time(raw_ct)
+                    if raw_op is not None:
+                        t.session.advance_operation_time(raw_op)
+                        
             writes_f.write(json.dumps(wrec, default=str) + "\n")
 
             if wrec["error"]:
