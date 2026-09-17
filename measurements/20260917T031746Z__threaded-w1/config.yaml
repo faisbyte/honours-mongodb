@@ -1,0 +1,94 @@
+# Threaded collection, w:1.
+#
+# Copy this file to make a new condition. Never edit it to change a condition:
+# the config inside a run directory is the record of what was measured.
+
+experiment:
+  name: threaded-w1
+  description: >
+    Independent writer and reader threads, so reads land before, during and
+    after each write. Covers the full causal consistency matrix from
+    https://www.mongodb.com/docs/manual/core/causal-consistency-read-write-concerns/
+
+replica_set:
+  name: rs0
+  seed_hosts:
+    - "127.0.0.1:27017"
+    - "127.0.0.1:27018"
+    - "127.0.0.1:27019"
+    - "127.0.0.1:27020"
+
+workload:
+  database: freshness
+  collection: probe
+  doc_key: "probe-1"
+  payload_bytes: 14
+
+  duration_s: 20           # 10 minutes; raise for longer unattended runs
+  warmup_s: 2               # discarded in analysis, still recorded on disk
+  write_interval_ms: 100    # must exceed write latency, or writes overlap
+  read_interval_us: 500     # per target; 8 targets at 500us is ~16k reads/sec
+
+  write_concern:
+    w: 1
+    j: null
+    wtimeout_ms: 5000
+
+targets:
+  # Where the bytes physically are
+  - id: direct-27017
+    kind: direct
+    host: "127.0.0.1:27017"
+    read_preference: secondaryPreferred
+    read_concern: local
+  - id: direct-27018
+    kind: direct
+    host: "127.0.0.1:27018"
+    read_preference: secondaryPreferred
+    read_concern: local
+  - id: direct-27019
+    kind: direct
+    host: "127.0.0.1:27019"
+    read_preference: secondaryPreferred
+    read_concern: local
+  - id: direct-27020
+    kind: direct
+    host: "127.0.0.1:27020"
+    read_preference: secondaryPreferred
+    read_concern: local
+
+  # What an application observes
+  - id: rs-primary-local
+    kind: replicaset
+    read_preference: primary
+    read_concern: local
+  - id: rs-secondary-local
+    kind: replicaset
+    read_preference: secondary
+    read_concern: local
+  - id: rs-secondary-majority
+    kind: replicaset
+    read_preference: secondary
+    read_concern: majority
+
+  # Causal consistency. The docs say sessions only guarantee causal
+  # consistency for reads with "majority" read concern and writes with
+  # "majority" write concern, so both cells are measured: the guaranteed one
+  # only holds in the w:majority run, and the local one is expected to fail.
+  - id: rs-secondary-causal-majority
+    kind: replicaset
+    read_preference: secondary
+    read_concern: majority
+    causal_consistency: true
+  - id: rs-secondary-causal-local
+    kind: replicaset
+    read_preference: secondary
+    read_concern: local
+    causal_consistency: true
+
+capture:
+  compress_output: true
+
+analysis:
+  bucket_us: 500
+  min_samples_per_bucket: 30

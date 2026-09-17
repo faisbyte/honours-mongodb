@@ -1,0 +1,10 @@
+target,pairs,violations,rate
+direct-27017,350999,0,0.0
+direct-27018,351086,0,0.0
+direct-27019,351062,0,0.0
+direct-27020,351082,0,0.0
+rs-primary-local,351057,0,0.0
+rs-secondary-causal-local,351013,2,5.697794668573529e-06
+rs-secondary-causal-majority,351089,0,0.0
+rs-secondary-local,350952,0,0.0
+rs-secondary-majority,350997,0,0.0

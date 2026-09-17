@@ -1,0 +1,122 @@
+{
+  "run_id": "20260917T052319Z__threaded-wmaj__rs-secondary-causal-majority",
+  "harness_version": 2,
+  "mode": "isolated",
+  "target": "rs-secondary-causal-majority",
+  "round_index": 1,
+  "writer_fatal": [],
+  "started_utc": "20260917T052319Z",
+  "finished_utc": "2026-09-17T05:26:21.196010+00:00",
+  "clock_anchor": {
+    "wall_ns": 1789622599599579000,
+    "perf_ns": 15773883880333
+  },
+  "clock_note": "All t_*_ns are time.perf_counter_ns() from one process. Threads share that clock, so writer and reader times are directly comparable with no skew. wall = anchor.wall_ns + (t - anchor.perf_ns).",
+  "threading_note": "Writer and each reader run on their own thread with their own session. Causal readers copy the writer's operationTime and clusterTime out under a lock and advance their own session on their own thread, so no session is touched by two threads.",
+  "totals": {
+    "writes": 904,
+    "reads": {
+      "rs-secondary-causal-majority": 361090
+    }
+  },
+  "config": {
+    "experiment": {
+      "name": "threaded-wmaj",
+      "description": "Independent writer and reader threads, so reads land before, during and after each write. Covers the full causal consistency matrix from https://www.mongodb.com/docs/manual/core/causal-consistency-read-write-concerns/\n"
+    },
+    "replica_set": {
+      "name": "rs0",
+      "seed_hosts": [
+        "127.0.0.1:27017",
+        "127.0.0.1:27018",
+        "127.0.0.1:27019",
+        "127.0.0.1:27020"
+      ]
+    },
+    "workload": {
+      "database": "freshness",
+      "collection": "probe",
+      "doc_key": "probe-1",
+      "payload_bytes": 14,
+      "mode": "isolated",
+      "duration_s": 180,
+      "warmup_s": 5,
+      "write_interval_ms": 200,
+      "read_interval_us": 500,
+      "write_concern": {
+        "w": "majority",
+        "j": null,
+        "wtimeout_ms": 5000
+      }
+    },
+    "targets": [
+      {
+        "id": "direct-27017",
+        "kind": "direct",
+        "host": "127.0.0.1:27017",
+        "read_preference": "secondaryPreferred",
+        "read_concern": "local"
+      },
+      {
+        "id": "direct-27018",
+        "kind": "direct",
+        "host": "127.0.0.1:27018",
+        "read_preference": "secondaryPreferred",
+        "read_concern": "local"
+      },
+      {
+        "id": "direct-27019",
+        "kind": "direct",
+        "host": "127.0.0.1:27019",
+        "read_preference": "secondaryPreferred",
+        "read_concern": "local"
+      },
+      {
+        "id": "direct-27020",
+        "kind": "direct",
+        "host": "127.0.0.1:27020",
+        "read_preference": "secondaryPreferred",
+        "read_concern": "local"
+      },
+      {
+        "id": "rs-primary-local",
+        "kind": "replicaset",
+        "read_preference": "primary",
+        "read_concern": "local"
+      },
+      {
+        "id": "rs-secondary-local",
+        "kind": "replicaset",
+        "read_preference": "secondary",
+        "read_concern": "local"
+      },
+      {
+        "id": "rs-secondary-majority",
+        "kind": "replicaset",
+        "read_preference": "secondary",
+        "read_concern": "majority"
+      },
+      {
+        "id": "rs-secondary-causal-majority",
+        "kind": "replicaset",
+        "read_preference": "secondary",
+        "read_concern": "majority",
+        "causal_consistency": true
+      },
+      {
+        "id": "rs-secondary-causal-local",
+        "kind": "replicaset",
+        "read_preference": "secondary",
+        "read_concern": "local",
+        "causal_consistency": true
+      }
+    ],
+    "capture": {
+      "compress_output": true
+    },
+    "analysis": {
+      "bucket_us": 500,
+      "min_samples_per_bucket": 30
+    }
+  }
+}

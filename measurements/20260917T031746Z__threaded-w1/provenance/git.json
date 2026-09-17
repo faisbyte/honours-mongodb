@@ -1,0 +1,15 @@
+{
+  "commit": "56643703cb4668763c37925da4269dd474a3ac58",
+  "dirty": true,
+  "dirty_files": [
+    "M config/smoke.yaml",
+    " M harness/analyse.py",
+    " M harness/collect.py",
+    "?? config/threaded-w1.yaml",
+    "?? config/threaded-wmaj.yaml",
+    "?? measurements/20260917T031437Z__smoke/",
+    "?? measurements/20260917T031516Z__smoke/",
+    "?? measurements/20260917T031746Z__threaded-w1/"
+  ],
+  "branch": "main"
+}

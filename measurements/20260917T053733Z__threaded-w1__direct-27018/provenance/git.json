@@ -1,0 +1,29 @@
+{
+  "commit": "56643703cb4668763c37925da4269dd474a3ac58",
+  "dirty": true,
+  "dirty_files": [
+    "M config/smoke.yaml",
+    " M harness/analyse.py",
+    " M harness/collect.py",
+    "?? config/threaded-w1.yaml",
+    "?? config/threaded-wmaj.yaml",
+    "?? harness/run_all.py",
+    "?? measurements/20260917T031437Z__smoke/",
+    "?? measurements/20260917T031516Z__smoke/",
+    "?? measurements/20260917T031746Z__threaded-w1/",
+    "?? measurements/20260917T032327Z__threaded-w1/",
+    "?? measurements/20260917T040244Z__threaded-w1__direct-27017/",
+    "?? measurements/20260917T050155Z__threaded-wmaj__direct-27017/",
+    "?? measurements/20260917T050458Z__threaded-wmaj__direct-27018/",
+    "?? measurements/20260917T050802Z__threaded-wmaj__direct-27019/",
+    "?? measurements/20260917T051105Z__threaded-wmaj__direct-27020/",
+    "?? measurements/20260917T051409Z__threaded-wmaj__rs-primary-local/",
+    "?? measurements/20260917T051712Z__threaded-wmaj__rs-secondary-local/",
+    "?? measurements/20260917T052015Z__threaded-wmaj__rs-secondary-majority/",
+    "?? measurements/20260917T052319Z__threaded-wmaj__rs-secondary-causal-majority/",
+    "?? measurements/20260917T052622Z__threaded-wmaj__rs-secondary-causal-local/",
+    "?? measurements/20260917T053429Z__threaded-w1__direct-27017/",
+    "?? measurements/20260917T053733Z__threaded-w1__direct-27018/"
+  ],
+  "branch": "main"
+}

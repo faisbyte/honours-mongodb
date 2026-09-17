@@ -1,0 +1,10 @@
+target,reads,errors,error_rate,kinds
+direct-27017,351027,0,0.0,{}
+direct-27018,350971,0,0.0,{}
+direct-27019,351019,0,0.0,{}
+direct-27020,350995,0,0.0,{}
+rs-primary-local,350999,0,0.0,{}
+rs-secondary-causal-local,351020,0,0.0,{}
+rs-secondary-causal-majority,351020,0,0.0,{}
+rs-secondary-local,350998,0,0.0,{}
+rs-secondary-majority,351020,0,0.0,{}
