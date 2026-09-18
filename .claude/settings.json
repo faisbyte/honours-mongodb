@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -n \"do_read\\\\|capture_op_time\\\\|operation_time\" harness/collect.py | head -20; echo \"--- reader_loop ---\"; sed -n '/^def reader_loop/,/^# ----/p' harness/collect.py)",
+      "Bash(python3 -m py_compile harness/collect.py)",
+      "Bash(python3 -)"
+    ],
+    "additionalDirectories": [
+      "/Users/faisalnaveed/Documents/honours-mongodb/harness"
+    ]
+  }
+}

@@ -14,6 +14,8 @@ entirely on whichever one happened to be running.
 Usage:
     python -m harness.run_all --config config/threaded-w1.yaml
     python -m harness.run_all --config config/threaded-w1.yaml --rounds 3
+    python -m harness.run_all --config config/threaded-w1.yaml \
+        --targets rs-secondary-causal-local rs-secondary-causal-majority
 """
 
 from __future__ import annotations
@@ -45,6 +47,10 @@ def main() -> None:
     ap.add_argument("--out", type=Path, default=REPO_ROOT / "measurements")
     ap.add_argument("--rounds", type=int, default=1,
                     help="sweeps over the full target list; default 1")
+    ap.add_argument("--targets", nargs="+", default=None,
+                    help="only sweep these target ids, e.g. after a fix that "
+                         "affects some targets and not others; default is "
+                         "every target in the config")
     ap.add_argument("--no-calibrate", action="store_true")
     args = ap.parse_args()
 
@@ -60,7 +66,15 @@ def main() -> None:
                          f"anything for 'isolated'; a concurrent run is a "
                          f"single harness.collect invocation.")
 
-    ids = [t["id"] for t in cfg["targets"]]
+    all_ids = [t["id"] for t in cfg["targets"]]
+    if args.targets is None:
+        ids = all_ids
+    else:
+        unknown = [t for t in args.targets if t not in all_ids]
+        if unknown:
+            raise SystemExit(f"[args] unknown target(s) {unknown}. Available "
+                             f"targets:\n  " + "\n  ".join(all_ids))
+        ids = args.targets
     duration = float(cfg["workload"]["duration_s"])
     total_runs = len(ids) * args.rounds
 

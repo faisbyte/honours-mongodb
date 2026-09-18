@@ -1,0 +1,3 @@
+run_id,mode,target,round_index,path
+20260917T111403Z__threaded-w1__rs-secondary-causal-local,isolated,rs-secondary-causal-local,1,measurements/20260917T111403Z__threaded-w1__rs-secondary-causal-local
+20260917T111706Z__threaded-w1__rs-secondary-causal-majority,isolated,rs-secondary-causal-majority,1,measurements/20260917T111706Z__threaded-w1__rs-secondary-causal-majority

@@ -1,0 +1,12 @@
+{
+  "rs-secondary-causal-local": {
+    "n": 500,
+    "errors": 0,
+    "min_ns": 93916,
+    "p50_ns": 113750,
+    "p95_ns": 164625,
+    "p99_ns": 222750,
+    "max_ns": 4112750,
+    "mean_ns": 131917.928
+  }
+}

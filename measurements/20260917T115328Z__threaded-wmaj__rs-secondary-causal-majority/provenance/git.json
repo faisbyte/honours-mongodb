@@ -1,0 +1,17 @@
+{
+  "commit": "97eea5c385b8eac7fb5899829bd70b64c9e535c9",
+  "dirty": true,
+  "dirty_files": [
+    "M harness/collect.py",
+    " M harness/run_all.py",
+    "?? .claude/",
+    "?? harness/ryw_test.py",
+    "?? measurements/20260917T111403Z__threaded-w1__rs-secondary-causal-local/",
+    "?? measurements/20260917T111706Z__threaded-w1__rs-secondary-causal-majority/",
+    "?? measurements/20260917T115025Z__threaded-wmaj__rs-secondary-causal-local/",
+    "?? measurements/20260917T115328Z__threaded-wmaj__rs-secondary-causal-majority/",
+    "?? measurements/merged/20260917T112135Z__threaded-w1/",
+    "?? measurements/merged/20260917T112457Z__threaded-w1/"
+  ],
+  "branch": "main"
+}

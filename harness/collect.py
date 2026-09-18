@@ -52,6 +52,7 @@ from typing import Any
 
 import yaml
 from pymongo import MongoClient
+from pymongo.read_concern import ReadConcern
 from pymongo.read_preferences import (Nearest, Primary, PrimaryPreferred,
                                       Secondary, SecondaryPreferred)
 
@@ -321,14 +322,33 @@ def reader_loop(t: Target, stop: threading.Event, clock: WriteClock,
     if t.read_concern:
         base_cmd["readConcern"] = {"level": t.read_concern}
 
+    # A causal target CANNOT read through the raw command path. A hand-built
+    # find document that already carries its own readConcern key passes
+    # through to the server unmodified, so pymongo never merges the session's
+    # afterClusterTime into it and the server has nothing to wait for: the
+    # read is an ordinary secondary read wearing a session. ryw_test.py
+    # --use-find-one demonstrates it, read-your-writes going from 0% to 100%
+    # on the same session purely by changing read path.
+    #
+    # Non-causal targets keep the raw command, which is not broken for them
+    # and whose results are already validated. Changing it would make those
+    # seven paths non-comparable with what has been collected.
+    causal_coll = None
+    if t.session is not None:
+        causal_coll = db.get_collection(
+            coll_name, read_preference=pref,
+            read_concern=ReadConcern(t.read_concern) if t.read_concern
+            else None)
+
     next_at = time.perf_counter_ns()
     while not stop.is_set():
         _spin_until(next_at)
         next_at += gap_ns
 
         # Causal targets pull the writer's timestamps across and advance their
-        # own session, on this thread. A read issued after this sees
-        # afterClusterTime and the server waits until it has caught up.
+        # own session, on this thread. The read that follows goes through the
+        # collection object below, which is what actually gets afterClusterTime
+        # onto the wire and makes the server wait for the commit point.
         causal_seq = None
         if t.session is not None:
             op_time, cluster_time, causal_seq = clock.snapshot()
@@ -345,11 +365,18 @@ def reader_loop(t: Target, stop: threading.Event, clock: WriteClock,
         op_time_out = None
         t0 = time.perf_counter_ns()
         try:
-            reply = db.command(base_cmd, read_preference=pref,
-                               session=t.session)
-            batch = reply.get("cursor", {}).get("firstBatch", [])
-            doc = batch[0] if batch else None
-            op_time_out = reply.get("operationTime")
+            if causal_coll is not None:
+                doc = causal_coll.find_one({"_id": key}, session=t.session)
+                # find_one does not hand back the raw reply, but pymongo
+                # advances the session's operation_time from it, which is the
+                # same timestamp the command path reads off the reply.
+                op_time_out = t.session.operation_time
+            else:
+                reply = db.command(base_cmd, read_preference=pref,
+                                   session=t.session)
+                batch = reply.get("cursor", {}).get("firstBatch", [])
+                doc = batch[0] if batch else None
+                op_time_out = reply.get("operationTime")
         except Exception as exc:  # noqa: BLE001 - failures are data
             err = f"{type(exc).__name__}: {exc}"
         t1 = time.perf_counter_ns()
