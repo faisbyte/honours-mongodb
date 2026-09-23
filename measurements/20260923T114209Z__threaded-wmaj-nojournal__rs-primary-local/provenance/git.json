@@ -1,0 +1,12 @@
+{
+  "commit": "0dc45cba4dd6c6e9526d4aefeb92a76f4f144bea",
+  "dirty": true,
+  "dirty_files": [
+    "?? config/threaded-wmaj-nojournal.yaml",
+    "?? harness/ack_latency.py",
+    "?? measurements/20260923T111936Z__threaded-wmaj__rs-primary-local/",
+    "?? measurements/20260923T114209Z__threaded-wmaj-nojournal__rs-primary-local/",
+    "?? measurements/merged/20260923T111441Z__ack_latency/"
+  ],
+  "branch": "main"
+}
