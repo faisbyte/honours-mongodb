@@ -38,7 +38,8 @@ def load_writes(run_dir: Path) -> pd.DataFrame:
     with opener as fh:
         df = pd.DataFrame(json.loads(line) for line in fh)
 
-    df["write_concern"] = f"w:{wc}"
+    j = manifest["config"]["workload"]["write_concern"].get("j")
+    df["write_concern"] = f"w:{wc}, j:{j}"
     df["experiment"] = name
     df["run_id"] = run_dir.name
     return df
