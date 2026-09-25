@@ -1,0 +1,19 @@
+condition,target,p50_ms,p90_ms,p99_ms
+"w:1, j:None",direct-27017,0.12,0.154,0.253
+"w:1, j:None",direct-27018,0.118,0.138,0.227
+"w:1, j:None",direct-27019,0.119,0.154,0.245
+"w:1, j:None",direct-27020,0.119,0.135,0.225
+"w:1, j:None",rs-primary-local,0.12,0.151,0.246
+"w:1, j:None",rs-secondary-causal-local,0.139,0.153,0.213
+"w:1, j:None",rs-secondary-causal-majority,0.138,0.147,0.255
+"w:1, j:None",rs-secondary-local,0.134,0.163,0.257
+"w:1, j:None",rs-secondary-majority,0.133,0.16,0.26
+"w:majority, j:None",direct-27017,0.116,0.128,0.178
+"w:majority, j:None",direct-27018,0.117,0.143,0.227
+"w:majority, j:None",direct-27019,0.118,0.135,0.209
+"w:majority, j:None",direct-27020,0.118,0.134,0.209
+"w:majority, j:None",rs-primary-local,0.118,0.135,0.202
+"w:majority, j:None",rs-secondary-causal-local,0.139,0.153,0.216
+"w:majority, j:None",rs-secondary-causal-majority,0.138,0.148,0.191
+"w:majority, j:None",rs-secondary-local,0.132,0.147,0.219
+"w:majority, j:None",rs-secondary-majority,0.132,0.145,0.211

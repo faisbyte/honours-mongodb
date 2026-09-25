@@ -1,0 +1,19 @@
+condition,target,writes,fresh_at_first_read,censored,vis_from_start_p50_ms,vis_from_start_p90_ms,vis_from_start_p99_ms,vis_from_ack_p50_ms,vis_from_ack_p99_ms,resolution_p50_ms,regressions_per_write
+"w:1, j:None",direct-27017,1756,0.86,0.0,0.628,0.723,0.882,0.086,0.27,0.33,0.0
+"w:1, j:None",direct-27018,1755,0.056,0.0,1.117,1.234,1.65,0.574,1.114,0.648,0.0
+"w:1, j:None",direct-27019,1756,0.028,0.0,1.137,1.438,1.711,0.592,1.156,0.665,0.0
+"w:1, j:None",direct-27020,1755,0.557,0.0,0.681,1.132,1.266,0.162,0.681,0.567,0.0
+"w:1, j:None",rs-primary-local,1755,0.836,0.0,0.627,0.741,0.964,0.085,0.299,0.322,0.0
+"w:1, j:None",rs-secondary-causal-local,1755,0.505,0.0,0.69,1.119,1.504,0.167,0.69,0.674,0.0
+"w:1, j:None",rs-secondary-causal-majority,1755,0.003,0.0,8.917,12.826,14.536,8.488,13.987,8.622,0.0
+"w:1, j:None",rs-secondary-local,1755,0.199,0.0,1.118,1.266,1.653,0.574,1.126,0.682,0.0011
+"w:1, j:None",rs-secondary-majority,1756,0.0,0.0006,12.601,13.755,15.613,12.053,15.056,0.642,0.0
+"w:majority, j:None",direct-27017,878,0.946,0.0,0.634,0.729,0.826,-8.42,-7.861,0.29,0.0
+"w:majority, j:None",direct-27018,878,0.018,0.0,1.133,1.602,1.76,-8.837,-7.425,0.663,0.0
+"w:majority, j:None",direct-27019,878,0.034,0.0,1.125,1.33,1.714,-8.448,-7.435,0.655,0.0
+"w:majority, j:None",direct-27020,878,0.666,0.0,0.686,1.157,1.253,-8.416,-7.837,0.677,0.0
+"w:majority, j:None",rs-primary-local,878,0.934,0.0,0.631,0.718,0.839,-8.455,-8.238,0.388,0.0
+"w:majority, j:None",rs-secondary-causal-local,878,0.524,0.0,0.737,1.167,1.263,-8.001,-3.879,0.685,0.0
+"w:majority, j:None",rs-secondary-causal-majority,878,0.0,0.0,9.119,13.09,13.605,0.079,0.573,0.661,0.0
+"w:majority, j:None",rs-secondary-local,878,0.267,0.0,1.115,1.2,1.67,-8.37,-7.489,0.67,0.0
+"w:majority, j:None",rs-secondary-majority,878,0.0,0.0,9.581,14.612,16.091,0.077,0.576,0.653,0.0
