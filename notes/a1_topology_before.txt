@@ -1,0 +1,27 @@
+[
+  {
+    name: '127.0.0.1:27017',
+    state: 'PRIMARY',
+    syncSource: '',
+    pingMs: undefined
+  },
+  {
+    name: '127.0.0.1:27018',
+    state: 'SECONDARY',
+    syncSource: '127.0.0.1:27020',
+    pingMs: Long('0')
+  },
+  {
+    name: '127.0.0.1:27019',
+    state: 'SECONDARY',
+    syncSource: '127.0.0.1:27020',
+    pingMs: Long('0')
+  },
+  {
+    name: '127.0.0.1:27020',
+    state: 'SECONDARY',
+    syncSource: '127.0.0.1:27017',
+    pingMs: Long('0')
+  }
+]
+true
