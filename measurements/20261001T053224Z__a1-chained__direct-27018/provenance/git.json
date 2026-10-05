@@ -1,0 +1,24 @@
+{
+  "commit": "aef849f8448aab0d274a2119d2f49bc8c84ac6c1",
+  "dirty": true,
+  "dirty_files": [
+    "?? measurements/20261001T042854Z__threaded-w1-nochain__direct-27017/",
+    "?? measurements/20261001T043157Z__threaded-w1-nochain__direct-27018/",
+    "?? measurements/20261001T043501Z__threaded-w1-nochain__direct-27019/",
+    "?? measurements/20261001T043804Z__threaded-w1-nochain__direct-27020/",
+    "?? measurements/20261001T045952Z__threaded-w1-chain-sameday__direct-27017/",
+    "?? measurements/20261001T050256Z__threaded-w1-chain-sameday__direct-27018/",
+    "?? measurements/20261001T050559Z__threaded-w1-chain-sameday__direct-27019/",
+    "?? measurements/20261001T050903Z__threaded-w1-chain-sameday__direct-27020/",
+    "?? measurements/20261001T052431Z__a1-unchained__direct-27017/",
+    "?? measurements/20261001T052603Z__a1-unchained__direct-27018/",
+    "?? measurements/20261001T052735Z__a1-unchained__direct-27019/",
+    "?? measurements/20261001T052907Z__a1-unchained__direct-27020/",
+    "?? measurements/20261001T053052Z__a1-chained__direct-27017/",
+    "?? measurements/20261001T053224Z__a1-chained__direct-27018/",
+    "?? measurements/merged/a1_chain_sameday_timings/",
+    "?? measurements/merged/a1_nochain_timings/",
+    "?? notes/a1_topology_restored.txt"
+  ],
+  "branch": "main"
+}

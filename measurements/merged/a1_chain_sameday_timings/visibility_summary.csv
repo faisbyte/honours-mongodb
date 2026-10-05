@@ -1,0 +1,5 @@
+condition,target,writes,fresh_at_first_read,censored,vis_from_start_p50_ms,vis_from_start_p90_ms,vis_from_start_p99_ms,vis_from_ack_p50_ms,vis_from_ack_p99_ms,resolution_p50_ms,regressions_per_write
+"w:1, j:None",direct-27017,1755,0.768,0.0,0.645,0.777,1.032,0.097,0.391,0.372,0.0
+"w:1, j:None",direct-27018,1756,0.296,0.0,0.853,1.191,1.746,0.521,1.04,0.661,0.0
+"w:1, j:None",direct-27019,1756,0.138,0.0,1.125,1.255,2.736,0.554,1.699,0.669,0.0
+"w:1, j:None",direct-27020,1755,0.205,0.0,1.107,1.184,1.512,0.547,0.874,0.678,0.0

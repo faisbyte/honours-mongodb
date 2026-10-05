@@ -1,0 +1,10 @@
+{
+  "write_concern": {
+    "w": 1
+  },
+  "read_concern": "majority",
+  "trials": 1000,
+  "journal_default": true,
+  "chaining_allowed": false,
+  "run_utc": "2026-10-02T01:17:29.848678+00:00"
+}

@@ -1,0 +1,4 @@
+arm,label,trials,held,rate,p50_us,p95_us,p99_us
+plain,plain read (no session),1000,0,0.0,202.0,267.5,388.3
+causal_bug,"causal session, hand-built command (bug)",1000,0,0.0,176.0,218.9,280.6
+causal_fixed,"causal session, find_one (fixed)",1000,1000,1.0,11470.6,18192.0,21737.9

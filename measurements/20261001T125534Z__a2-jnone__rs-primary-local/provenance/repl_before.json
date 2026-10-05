@@ -1,0 +1,364 @@
+{
+  "captured_ns": 1790859334390467000,
+  "replSetGetStatus": {
+    "set": "rs0",
+    "date": "2026-10-01 12:55:34.390000",
+    "myState": 1,
+    "term": 11632,
+    "syncSourceHost": "",
+    "syncSourceId": -1,
+    "heartbeatIntervalMillis": 2000,
+    "majorityVoteCount": 3,
+    "writeMajorityCount": 3,
+    "votingMembersCount": 4,
+    "writableVotingMembersCount": 4,
+    "optimes": {
+      "lastCommittedOpTime": {
+        "ts": "Timestamp(1790859331, 4)",
+        "t": 11632
+      },
+      "lastCommittedWallTime": "2026-10-01 12:55:31.616000",
+      "readConcernMajorityOpTime": {
+        "ts": "Timestamp(1790859331, 4)",
+        "t": 11632
+      },
+      "appliedOpTime": {
+        "ts": "Timestamp(1790859331, 4)",
+        "t": 11632
+      },
+      "durableOpTime": {
+        "ts": "Timestamp(1790859331, 4)",
+        "t": 11632
+      },
+      "writtenOpTime": {
+        "ts": "Timestamp(1790859331, 4)",
+        "t": 11632
+      },
+      "lastAppliedWallTime": "2026-10-01 12:55:31.616000",
+      "lastDurableWallTime": "2026-10-01 12:55:31.616000",
+      "lastWrittenWallTime": "2026-10-01 12:55:31.616000"
+    },
+    "lastStableRecoveryTimestamp": "Timestamp(1790859283, 1)",
+    "electionCandidateMetrics": {
+      "lastElectionReason": "priorityTakeover",
+      "lastElectionDate": "2026-10-01 11:11:48.606000",
+      "electionTerm": 11632,
+      "lastCommittedOpTimeAtElection": {
+        "ts": "Timestamp(1790853107, 1)",
+        "t": 11631
+      },
+      "lastSeenWrittenOpTimeAtElection": {
+        "ts": "Timestamp(1790853107, 1)",
+        "t": 11631
+      },
+      "lastSeenOpTimeAtElection": {
+        "ts": "Timestamp(1790853107, 1)",
+        "t": 11631
+      },
+      "numVotesNeeded": 3,
+      "priorityAtElection": 10.0,
+      "electionTimeoutMillis": 10000,
+      "priorPrimaryMemberId": 3,
+      "numCatchUpOps": 0,
+      "newTermStartDate": "2026-10-01 11:11:48.635000",
+      "wMajorityWriteAvailabilityDate": "2026-10-01 11:11:48.664000"
+    },
+    "electionParticipantMetrics": {
+      "votedForCandidate": true,
+      "electionTerm": 11631,
+      "lastVoteDate": "2026-10-01 11:11:37.110000",
+      "electionCandidateMemberId": 3,
+      "voteReason": "",
+      "lastWrittenOpTimeAtElection": {
+        "ts": "Timestamp(1790852978, 1)",
+        "t": 11630
+      },
+      "maxWrittenOpTimeInSet": {
+        "ts": "Timestamp(1790852978, 1)",
+        "t": 11630
+      },
+      "lastAppliedOpTimeAtElection": {
+        "ts": "Timestamp(1790852978, 1)",
+        "t": 11630
+      },
+      "maxAppliedOpTimeInSet": {
+        "ts": "Timestamp(1790852978, 1)",
+        "t": 11630
+      },
+      "priorityAtElection": 10.0
+    },
+    "members": [
+      {
+        "_id": 0,
+        "name": "127.0.0.1:27017",
+        "health": 1.0,
+        "state": 1,
+        "stateStr": "PRIMARY",
+        "uptime": 1244585,
+        "optime": {
+          "ts": "Timestamp(1790859331, 4)",
+          "t": 11632
+        },
+        "optimeDate": "2026-10-01 12:55:31",
+        "optimeWritten": {
+          "ts": "Timestamp(1790859331, 4)",
+          "t": 11632
+        },
+        "optimeWrittenDate": "2026-10-01 12:55:31",
+        "lastAppliedWallTime": "2026-10-01 12:55:31.616000",
+        "lastDurableWallTime": "2026-10-01 12:55:31.616000",
+        "lastWrittenWallTime": "2026-10-01 12:55:31.616000",
+        "syncSourceHost": "",
+        "syncSourceId": -1,
+        "infoMessage": "",
+        "electionTime": "Timestamp(1790853108, 1)",
+        "electionDate": "2026-10-01 11:11:48",
+        "configVersion": 16,
+        "configTerm": 11632,
+        "self": true,
+        "lastHeartbeatMessage": ""
+      },
+      {
+        "_id": 1,
+        "name": "127.0.0.1:27018",
+        "health": 1.0,
+        "state": 2,
+        "stateStr": "SECONDARY",
+        "uptime": 6246,
+        "optime": {
+          "ts": "Timestamp(1790859331, 4)",
+          "t": 11632
+        },
+        "optimeDurable": {
+          "ts": "Timestamp(1790859331, 4)",
+          "t": 11632
+        },
+        "optimeWritten": {
+          "ts": "Timestamp(1790859331, 4)",
+          "t": 11632
+        },
+        "optimeDate": "2026-10-01 12:55:31",
+        "optimeDurableDate": "2026-10-01 12:55:31",
+        "optimeWrittenDate": "2026-10-01 12:55:31",
+        "lastAppliedWallTime": "2026-10-01 12:55:31.616000",
+        "lastDurableWallTime": "2026-10-01 12:55:31.616000",
+        "lastWrittenWallTime": "2026-10-01 12:55:31.616000",
+        "lastHeartbeat": "2026-10-01 12:55:32.672000",
+        "lastHeartbeatRecv": "2026-10-01 12:55:32.686000",
+        "pingMs": 0,
+        "lastHeartbeatMessage": "",
+        "syncSourceHost": "127.0.0.1:27017",
+        "syncSourceId": 0,
+        "infoMessage": "",
+        "configVersion": 16,
+        "configTerm": 11632
+      },
+      {
+        "_id": 2,
+        "name": "127.0.0.1:27019",
+        "health": 1.0,
+        "state": 2,
+        "stateStr": "SECONDARY",
+        "uptime": 6246,
+        "optime": {
+          "ts": "Timestamp(1790859331, 4)",
+          "t": 11632
+        },
+        "optimeDurable": {
+          "ts": "Timestamp(1790859331, 4)",
+          "t": 11632
+        },
+        "optimeWritten": {
+          "ts": "Timestamp(1790859331, 4)",
+          "t": 11632
+        },
+        "optimeDate": "2026-10-01 12:55:31",
+        "optimeDurableDate": "2026-10-01 12:55:31",
+        "optimeWrittenDate": "2026-10-01 12:55:31",
+        "lastAppliedWallTime": "2026-10-01 12:55:31.616000",
+        "lastDurableWallTime": "2026-10-01 12:55:31.616000",
+        "lastWrittenWallTime": "2026-10-01 12:55:31.616000",
+        "lastHeartbeat": "2026-10-01 12:55:32.672000",
+        "lastHeartbeatRecv": "2026-10-01 12:55:32.679000",
+        "pingMs": 0,
+        "lastHeartbeatMessage": "",
+        "syncSourceHost": "127.0.0.1:27017",
+        "syncSourceId": 0,
+        "infoMessage": "",
+        "configVersion": 16,
+        "configTerm": 11632
+      },
+      {
+        "_id": 3,
+        "name": "127.0.0.1:27020",
+        "health": 1.0,
+        "state": 2,
+        "stateStr": "SECONDARY",
+        "uptime": 9211,
+        "optime": {
+          "ts": "Timestamp(1790859331, 4)",
+          "t": 11632
+        },
+        "optimeDurable": {
+          "ts": "Timestamp(1790859331, 4)",
+          "t": 11632
+        },
+        "optimeWritten": {
+          "ts": "Timestamp(1790859331, 4)",
+          "t": 11632
+        },
+        "optimeDate": "2026-10-01 12:55:31",
+        "optimeDurableDate": "2026-10-01 12:55:31",
+        "optimeWrittenDate": "2026-10-01 12:55:31",
+        "lastAppliedWallTime": "2026-10-01 12:55:31.616000",
+        "lastDurableWallTime": "2026-10-01 12:55:31.616000",
+        "lastWrittenWallTime": "2026-10-01 12:55:31.616000",
+        "lastHeartbeat": "2026-10-01 12:55:32.672000",
+        "lastHeartbeatRecv": "2026-10-01 12:55:32.694000",
+        "pingMs": 0,
+        "lastHeartbeatMessage": "",
+        "syncSourceHost": "127.0.0.1:27017",
+        "syncSourceId": 0,
+        "infoMessage": "",
+        "configVersion": 16,
+        "configTerm": 11632
+      }
+    ],
+    "ok": 1.0,
+    "$clusterTime": {
+      "clusterTime": "Timestamp(1790859331, 4)",
+      "signature": {
+        "hash": "b'\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00'",
+        "keyId": 0
+      }
+    },
+    "operationTime": "Timestamp(1790859331, 4)"
+  },
+  "replSetGetConfig": {
+    "config": {
+      "_id": "rs0",
+      "version": 16,
+      "term": 11632,
+      "members": [
+        {
+          "_id": 0,
+          "host": "127.0.0.1:27017",
+          "arbiterOnly": false,
+          "buildIndexes": true,
+          "hidden": false,
+          "priority": 10.0,
+          "tags": {},
+          "secondaryDelaySecs": 0,
+          "votes": 1
+        },
+        {
+          "_id": 1,
+          "host": "127.0.0.1:27018",
+          "arbiterOnly": false,
+          "buildIndexes": true,
+          "hidden": false,
+          "priority": 1.0,
+          "tags": {},
+          "secondaryDelaySecs": 0,
+          "votes": 1
+        },
+        {
+          "_id": 2,
+          "host": "127.0.0.1:27019",
+          "arbiterOnly": false,
+          "buildIndexes": true,
+          "hidden": false,
+          "priority": 1.0,
+          "tags": {},
+          "secondaryDelaySecs": 0,
+          "votes": 1
+        },
+        {
+          "_id": 3,
+          "host": "127.0.0.1:27020",
+          "arbiterOnly": false,
+          "buildIndexes": true,
+          "hidden": false,
+          "priority": 1.0,
+          "tags": {},
+          "secondaryDelaySecs": 0,
+          "votes": 1
+        }
+      ],
+      "protocolVersion": 1,
+      "writeConcernMajorityJournalDefault": true,
+      "settings": {
+        "chainingAllowed": false,
+        "heartbeatIntervalMillis": 2000,
+        "heartbeatTimeoutSecs": 10,
+        "electionTimeoutMillis": 10000,
+        "catchUpTimeoutMillis": -1,
+        "catchUpTakeoverDelayMillis": 30000,
+        "getLastErrorModes": {},
+        "getLastErrorDefaults": {
+          "w": 1,
+          "wtimeout": 0
+        },
+        "replicaSetId": "6a8bb9aef5b4d624ff19a40d"
+      }
+    },
+    "ok": 1.0,
+    "$clusterTime": {
+      "clusterTime": "Timestamp(1790859331, 4)",
+      "signature": {
+        "hash": "b'\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00'",
+        "keyId": 0
+      }
+    },
+    "operationTime": "Timestamp(1790859331, 4)"
+  },
+  "hello": {
+    "topologyVersion": {
+      "processId": "6aab5a9d7a82495b2de136e5",
+      "counter": 18643
+    },
+    "hosts": [
+      "127.0.0.1:27017",
+      "127.0.0.1:27018",
+      "127.0.0.1:27019",
+      "127.0.0.1:27020"
+    ],
+    "setName": "rs0",
+    "setVersion": 16,
+    "isWritablePrimary": true,
+    "secondary": false,
+    "primary": "127.0.0.1:27017",
+    "me": "127.0.0.1:27017",
+    "electionId": "7fffffff0000000000002d70",
+    "lastWrite": {
+      "opTime": {
+        "ts": "Timestamp(1790859331, 4)",
+        "t": 11632
+      },
+      "lastWriteDate": "2026-10-01 12:55:31",
+      "majorityOpTime": {
+        "ts": "Timestamp(1790859331, 4)",
+        "t": 11632
+      },
+      "majorityWriteDate": "2026-10-01 12:55:31"
+    },
+    "maxBsonObjectSize": 16777216,
+    "maxMessageSizeBytes": 48000000,
+    "maxWriteBatchSize": 100000,
+    "localTime": "2026-10-01 12:55:34.391000",
+    "logicalSessionTimeoutMinutes": 30,
+    "connectionId": 110464,
+    "minWireVersion": 0,
+    "maxWireVersion": 28,
+    "readOnly": false,
+    "ok": 1.0,
+    "$clusterTime": {
+      "clusterTime": "Timestamp(1790859331, 4)",
+      "signature": {
+        "hash": "b'\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00'",
+        "keyId": 0
+      }
+    },
+    "operationTime": "Timestamp(1790859331, 4)"
+  }
+}

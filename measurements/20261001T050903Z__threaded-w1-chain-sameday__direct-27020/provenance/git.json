@@ -1,0 +1,18 @@
+{
+  "commit": "ba8b1eb63b2c29b4755fcbb8743a50ecfb2c3829",
+  "dirty": true,
+  "dirty_files": [
+    "?? config/threaded-w1-nochain.yaml",
+    "?? measurements/20261001T042854Z__threaded-w1-nochain__direct-27017/",
+    "?? measurements/20261001T043157Z__threaded-w1-nochain__direct-27018/",
+    "?? measurements/20261001T043501Z__threaded-w1-nochain__direct-27019/",
+    "?? measurements/20261001T043804Z__threaded-w1-nochain__direct-27020/",
+    "?? measurements/20261001T045952Z__threaded-w1-chain-sameday__direct-27017/",
+    "?? measurements/20261001T050256Z__threaded-w1-chain-sameday__direct-27018/",
+    "?? measurements/20261001T050559Z__threaded-w1-chain-sameday__direct-27019/",
+    "?? measurements/20261001T050903Z__threaded-w1-chain-sameday__direct-27020/",
+    "?? measurements/merged/a1_nochain_timings/",
+    "?? notes/a1_topology_restored.txt"
+  ],
+  "branch": "main"
+}

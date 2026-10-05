@@ -1,0 +1,11 @@
+{
+  "commit": "2b5eecd3beedc53def56fa6a081a342feb844981",
+  "dirty": true,
+  "dirty_files": [
+    "?? config/threaded-w1-nochain.yaml",
+    "?? measurements/20261001T042854Z__threaded-w1-nochain__direct-27017/",
+    "?? measurements/20261001T043157Z__threaded-w1-nochain__direct-27018/",
+    "?? measurements/20261001T043501Z__threaded-w1-nochain__direct-27019/"
+  ],
+  "branch": "main"
+}
