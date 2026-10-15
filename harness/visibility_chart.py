@@ -15,10 +15,18 @@ and tests equality, event_timings.py gives the per-write visibility times):
   4. Warmup writes, errored writes and writes that never get a fresh read are
      excluded (and counted in the printout).
 Every run is processed on its own and nothing is mixed across runs, because
-perf_counter_ns timestamps from different processes share no epoch.
+perf_counter_ns timestamps from different processes share no epoch. When
+several runs match one path, their per-write times are pooled after that.
 
-Run from the repo root:
-    python visibility_chart.py
+Runs come from runs/VALID.csv (default: included threaded-w1 runs with journal
+default ON); the usual selection flags narrow it. The topology of every run is
+printed, because the chart itself does not show it.
+
+Run from the repo root, as a module so the harness package resolves:
+    python -m harness.visibility_chart
+    python -m harness.visibility_chart --topology star --out /some/dir
+Output goes to measurements/merged/<UTC stamp>__visibility_chart/ unless --out
+is given.
 """
 
 from __future__ import annotations
@@ -27,6 +35,7 @@ import argparse
 import gzip
 import json
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 import numpy as np
@@ -282,7 +291,9 @@ def draw(stats: dict, out_dir: Path) -> list[Path]:
 def main() -> None:
     ap = argparse.ArgumentParser()
     runs.add_selection_args(ap, defaults={**SELECTION_DEFAULTS, "target": ORDER})
-    ap.add_argument("--out", type=Path, default=Path("."), help="where to write the chart files")
+    ap.add_argument("--out", type=Path, default=None,
+                    help="where to write the chart files; default "
+                         "measurements/merged/<UTC stamp>__visibility_chart")
     ap.add_argument("--force", action="store_true",
                     help="draw even if the write concern or journal default check fails")
     args = ap.parse_args()
@@ -347,7 +358,9 @@ def main() -> None:
         print(f"\n{len(fails)} check(s) FAILED, not drawing. Fix the cause or rerun with --force.")
         sys.exit(2)
 
-    paths = draw(stats, args.out)
+    out = args.out or (runs.MEASUREMENTS / "merged" /
+                       f"{datetime.now(timezone.utc):%Y%m%dT%H%M%SZ}__visibility_chart")
+    paths = draw(stats, out)
     P, L, M = (stats[k] for k in ORDER)
     print("\nWrote: " + ", ".join(str(p) for p in paths))
     print(f"{len(warns)} warning(s), {len(fails)} failure(s).")

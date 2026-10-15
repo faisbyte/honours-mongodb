@@ -30,10 +30,10 @@ workload:
   doc_key: "probe-1"
   payload_bytes: 14
 
-  duration_s: 20           # 10 minutes; raise for longer unattended runs
+  duration_s: 20           # seconds of collection per run, warmup included
   warmup_s: 2               # discarded in analysis, still recorded on disk
   write_interval_ms: 100    # must exceed write latency, or writes overlap
-  read_interval_us: 5000     # per target; 8 targets at 500us is ~16k reads/sec
+  read_interval_us: 5000     # gap between read slots in microseconds; 500 is 2,000 reads/s
 
   write_concern:
     w: 1

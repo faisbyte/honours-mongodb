@@ -22,13 +22,13 @@ should be slow and fresh. A plain read returns whatever the secondary has, so
 it should be fast and sometimes stale. If both arms come back fast, the
 session is not propagating.
 
---use-find-one tests a specific hypothesis for why the session might not be
-propagating: pymongo injects afterClusterTime automatically when it builds a
-command itself, but this script's default read path constructs a raw find
-command with an explicit readConcern key already set, and that hand-built
-command may pass through unmodified rather than getting afterClusterTime
-merged in. Comparing the raw-command result against the find_one() result
-isolates whether that is the cause.
+--use-find-one reads through Collection.find_one() instead of the default
+raw Database.command() find. In PyMongo 4.18 Database.command() never passes a
+read concern to the command runner, so session._update_read_concern() is
+never called and no db.command() read carries afterClusterTime, whether or not
+the command document has its own readConcern key. find_one() builds the find
+itself and merges afterClusterTime in. The default path therefore reproduces
+the original harness bug, and --use-find-one shows the fix.
 
 Usage:
     python -m harness.ryw_test

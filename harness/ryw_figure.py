@@ -5,13 +5,16 @@ Each trial writes a new value, then immediately reads it back from a SECONDARY
 with readConcern "majority". Three arms, differing only in how the read is made:
 
     plain          no session, read through find_one()
-    causal (bug)   causal session, read through a hand-built db.command()
+    causal (bug)   causal session, read through db.command()
     causal (fixed) causal session, read through find_one()
 
-The middle arm is the harness bug found earlier: pymongo does not merge
-afterClusterTime into a hand-built find command that already carries a
-readConcern, so the session timestamp never reaches the server. Showing it
-next to the fixed arm documents both the bug and the fix in one figure.
+The middle arm is the harness bug found earlier. In PyMongo 4.18
+Database.command() never passes a read concern to the command runner, so
+session._update_read_concern() is never called and every db.command() read
+reaches the server without afterClusterTime, whatever the command document
+contains. find_one() builds the find itself and merges afterClusterTime in.
+Showing the two arms side by side documents both the bug and the fix in one
+figure.
 
 Per-trial data is saved, so the figure can be redrawn without rerunning.
 
@@ -41,7 +44,7 @@ URI = f"mongodb://{HOSTS}/?replicaSet=rs0"
 
 ARMS = [
     ("plain", "plain read (no session)"),
-    ("causal_bug", "causal session, hand-built command (bug)"),
+    ("causal_bug", "causal session, db.command (bug)"),
     ("causal_fixed", "causal session, find_one (fixed)"),
 ]
 COLOURS = {"plain": "#7f7f7f", "causal_bug": "#d62728", "causal_fixed": "#2ca02c"}
@@ -124,7 +127,7 @@ def draw(df: pd.DataFrame, summary: pd.DataFrame, meta: dict, out: Path) -> None
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4.6))
 
-    labels = ["plain\n(no session)", "causal\n(hand-built command,\nbug)",
+    labels = ["plain\n(no session)", "causal\n(db.command,\nbug)",
               "causal\n(find_one,\nfixed)"]
     present = [a for a, _ in ARMS if a in set(summary["arm"])]
     rows = [summary[summary["arm"] == a].iloc[0] for a in present]
