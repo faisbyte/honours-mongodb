@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 """Client-observed freshness collector for a MongoDB replica set.
 
+Version 3 reads every target, and calibration, through Collection.find_one
+(see read_collection). Runs from version 2 read non-causal targets through a
+hand-built find sent with Database.command, so the two are not directly
+comparable on read latency.
+
 Version 2. Changes from v1, following supervisor feedback:
 
   * Writer and readers run on INDEPENDENT THREADS. In v1 reads only began
@@ -305,40 +310,30 @@ def writer_loop(stop: threading.Event, clock: WriteClock, out: list,
 # readers
 # --------------------------------------------------------------------------
 
+def read_collection(t: Target, cfg: dict):
+    """The collection object every read on this target goes through.
+
+    All targets, causal or not, and calibration read with
+    Collection.find_one on this object, so every path shares one driver code
+    path and differs only in read preference, read concern and session.
+
+    Reads never go through Database.command. In PyMongo 4.18
+    Database.command does not pass a read concern to the command runner, so
+    session._update_read_concern() is never called and a causal session's
+    afterClusterTime never reaches the server, whatever the command document
+    contains. find_one builds the find itself and merges afterClusterTime in.
+    """
+    w = cfg["workload"]
+    return t.client[w["database"]][w["collection"]].with_options(
+        read_preference=t.pref(),
+        read_concern=ReadConcern(t.read_concern))
+
+
 def reader_loop(t: Target, stop: threading.Event, clock: WriteClock,
                 cfg: dict) -> None:
-    w = cfg["workload"]
-    db = t.client[w["database"]]
-    coll_name, key = w["collection"], w["doc_key"]
+    key = cfg["workload"]["doc_key"]
     gap_ns = int(t.read_interval_us * 1e3)
-    pref = t.pref()
-
-    base_cmd: dict[str, Any] = {
-        "find": coll_name,
-        "filter": {"_id": key},
-        "limit": 1,
-        "singleBatch": True,
-    }
-    if t.read_concern:
-        base_cmd["readConcern"] = {"level": t.read_concern}
-
-    # A causal target CANNOT read through the raw command path. A hand-built
-    # find document that already carries its own readConcern key passes
-    # through to the server unmodified, so pymongo never merges the session's
-    # afterClusterTime into it and the server has nothing to wait for: the
-    # read is an ordinary secondary read wearing a session. ryw_test.py
-    # --use-find-one demonstrates it, read-your-writes going from 0% to 100%
-    # on the same session purely by changing read path.
-    #
-    # Non-causal targets keep the raw command, which is not broken for them
-    # and whose results are already validated. Changing it would make those
-    # seven paths non-comparable with what has been collected.
-    causal_coll = None
-    if t.session is not None:
-        causal_coll = db.get_collection(
-            coll_name, read_preference=pref,
-            read_concern=ReadConcern(t.read_concern) if t.read_concern
-            else None)
+    coll = read_collection(t, cfg)
 
     next_at = time.perf_counter_ns()
     while not stop.is_set():
@@ -346,9 +341,8 @@ def reader_loop(t: Target, stop: threading.Event, clock: WriteClock,
         next_at += gap_ns
 
         # Causal targets pull the writer's timestamps across and advance their
-        # own session, on this thread. The read that follows goes through the
-        # collection object below, which is what actually gets afterClusterTime
-        # onto the wire and makes the server wait for the commit point.
+        # own session, on this thread. find_one then puts afterClusterTime on
+        # the wire and the server waits until it has caught up.
         causal_seq = None
         if t.session is not None:
             op_time, cluster_time, causal_seq = clock.snapshot()
@@ -365,18 +359,9 @@ def reader_loop(t: Target, stop: threading.Event, clock: WriteClock,
         op_time_out = None
         t0 = time.perf_counter_ns()
         try:
-            if causal_coll is not None:
-                doc = causal_coll.find_one({"_id": key}, session=t.session)
-                # find_one does not hand back the raw reply, but pymongo
-                # advances the session's operation_time from it, which is the
-                # same timestamp the command path reads off the reply.
+            doc = coll.find_one({"_id": key}, session=t.session)
+            if t.session is not None:
                 op_time_out = t.session.operation_time
-            else:
-                reply = db.command(base_cmd, read_preference=pref,
-                                   session=t.session)
-                batch = reply.get("cursor", {}).get("firstBatch", [])
-                doc = batch[0] if batch else None
-                op_time_out = reply.get("operationTime")
         except Exception as exc:  # noqa: BLE001 - failures are data
             err = f"{type(exc).__name__}: {exc}"
         t1 = time.perf_counter_ns()
@@ -405,20 +390,17 @@ def calibrate(targets: list[Target], cfg: dict, n: int = 500) -> dict:
     Anything below the p50 here is under the harness's resolution and should
     not be interpreted as replication behaviour.
     """
-    w = cfg["workload"]
+    key = cfg["workload"]["doc_key"]
     out = {}
     for t in targets:
-        db = t.client[w["database"]]
-        cmd: dict[str, Any] = {"find": w["collection"],
-                               "filter": {"_id": w["doc_key"]},
-                               "limit": 1, "singleBatch": True}
-        if t.read_concern:
-            cmd["readConcern"] = {"level": t.read_concern}
+        # Same read path as reader_loop, session included for causal
+        # targets, so the calibration covers what the run actually does.
+        coll = read_collection(t, cfg)
         lat, errs = [], 0
         for _ in range(n):
             t0 = time.perf_counter_ns()
             try:
-                db.command(cmd, read_preference=t.pref())
+                coll.find_one({"_id": key}, session=t.session)
                 lat.append(time.perf_counter_ns() - t0)
             except Exception:  # noqa: BLE001
                 errs += 1
@@ -557,7 +539,8 @@ def run(cfg: dict, cfg_path: Path, out_root: Path, do_calibrate: bool,
                     provenance.server_status(rs_client))
     provenance.dump(run_dir, "manifest.json", {
         "run_id": run_id,
-        "harness_version": 2,
+        "harness_version": 3,
+        "read_path": "Collection.find_one for every target and calibration",
         "mode": mode,
         "target": target_id,
         "round_index": round_index if round_index is not None else 1,
