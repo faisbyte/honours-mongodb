@@ -3,3 +3,4 @@ __pycache__/
 .venv/
 # Derived artefacts are cheap to regenerate; raw .jsonl.gz IS committed.
 measurements/*/derived/
+void/*/derived/
