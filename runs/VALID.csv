@@ -71,3 +71,11 @@ run_id,config,topology,journal_default,power,include
 20261001T234509Z__a2-reads-w1__rs-secondary-local,a2-reads-w1,star,true,battery,yes
 20261001T234641Z__a2-reads-w1__rs-secondary-causal-majority,a2-reads-w1,star,true,battery,yes
 20261001T234813Z__a2-reads-w1__rs-secondary-majority,a2-reads-w1,star,true,battery,yes
+scratch/20261015T090831Z__threaded-w1-val__rs-secondary-local,threaded-w1-val,star,true,AC,no
+scratch/20261015T090934Z__threaded-w1-val__rs-secondary-majority,threaded-w1-val,star,true,AC,no
+scratch/20261015T091036Z__threaded-w1-val__rs-secondary-causal-majority,threaded-w1-val,star,true,AC,no
+scratch/20261015T091139Z__threaded-w1-val__rs-primary-linearizable,threaded-w1-val,star,true,AC,no
+scratch/20261015T091245Z__threaded-w1-val__rs-primary-local,threaded-w1-val,star,true,AC,no
+scratch/20261015T091348Z__threaded-w2-val__rs-primary-local,threaded-w2-val,star,true,AC,no
+scratch/20261015T091450Z__threaded-w3-val__rs-primary-local,threaded-w3-val,star,true,AC,no
+scratch/20261015T091552Z__threaded-wmaj-val__rs-primary-local,threaded-wmaj-val,star,true,AC,no
