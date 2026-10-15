@@ -376,13 +376,10 @@ def reader_loop(t: Target, stop: threading.Event, clock: WriteClock,
 
         err = None
         doc = None
-        op_time_out = None
         t.wire.begin()
         t0 = time.perf_counter_ns()
         try:
             doc = coll.find_one({"_id": key}, session=t.session)
-            if t.session is not None:
-                op_time_out = t.session.operation_time
         except Exception as exc:  # noqa: BLE001 - failures are data
             err = f"{type(exc).__name__}: {exc}"
         t1 = time.perf_counter_ns()
@@ -397,8 +394,10 @@ def reader_loop(t: Target, stop: threading.Event, clock: WriteClock,
             "latency_ns": t1 - t0,
             "observed_seq": doc.get("seq") if doc else None,
             "observed_wall_ns": doc.get("wall_ns") if doc else None,
-            "operationTime": {"t": op_time_out.time, "i": op_time_out.inc}
-                             if op_time_out else None,
+            # The reply's own operationTime, from the command listener. Not
+            # session.operation_time: on a causal session that is the running
+            # maximum, which the reader has just advanced to the writer's.
+            "operationTime": sent["reply_operation_time"] if sent else None,
             "causal_waited_for_seq": causal_seq,
             # readConcern exactly as the find command carried it on the wire
             "read_concern_sent": sent["read_concern"] if sent else None,

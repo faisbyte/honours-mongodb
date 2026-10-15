@@ -45,7 +45,9 @@ class WireListener(monitoring.CommandListener):
         """The find this thread sent since begin(), or None if none was sent.
 
         {"request_id", "read_concern": level or None,
-         "after_cluster_time": {t, i} or None}
+         "after_cluster_time": {t, i} or None,
+         "reply_operation_time": {t, i} from the server's reply, or None if
+                                 the command failed or the reply had none}
         """
         return getattr(self._local, "sent", None)
 
@@ -58,6 +60,7 @@ class WireListener(monitoring.CommandListener):
                 "request_id": event.request_id,
                 "read_concern": rc.get("level"),
                 "after_cluster_time": ts_doc(rc.get("afterClusterTime")),
+                "reply_operation_time": None,
             }
         with self._lock:
             self._commands[event.command_name] += 1
@@ -67,7 +70,13 @@ class WireListener(monitoring.CommandListener):
                                     f"{rc.get('level')} afterClusterTime={act}"] += 1
 
     def succeeded(self, event: monitoring.CommandSucceededEvent) -> None:
-        pass
+        # The reply is the server's full response document, so its
+        # operationTime is the read's own, not the session's running maximum.
+        if event.command_name != "find":
+            return
+        sent = getattr(self._local, "sent", None)
+        if sent is not None and sent["request_id"] == event.request_id:
+            sent["reply_operation_time"] = ts_doc(event.reply.get("operationTime"))
 
     def failed(self, event: monitoring.CommandFailedEvent) -> None:
         pass
