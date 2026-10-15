@@ -335,9 +335,19 @@ def reader_loop(t: Target, stop: threading.Event, clock: WriteClock,
     gap_ns = int(t.read_interval_us * 1e3)
     coll = read_collection(t, cfg)
 
-    next_at = time.perf_counter_ns()
+    # Reads sit on a fixed grid of slots gap_ns apart. A slot whose time has
+    # already passed when the reader is ready (the previous read overran it)
+    # is skipped and counted, never made up. Catching up would fire reads back
+    # to back after every slow read and bunch the sample there.
+    next_at = time.perf_counter_ns() + gap_ns
     while not stop.is_set():
-        _spin_until(next_at)
+        missed = 0
+        now = time.perf_counter_ns()
+        if now > next_at:
+            missed = (now - next_at) // gap_ns + 1
+            next_at += missed * gap_ns
+        t_sched = next_at
+        _spin_until(t_sched)
         next_at += gap_ns
 
         # Causal targets pull the writer's timestamps across and advance their
@@ -368,7 +378,9 @@ def reader_loop(t: Target, stop: threading.Event, clock: WriteClock,
 
         t.records.append({
             "target": t.id,
-            "t_start_ns": t0,
+            "t_sched_ns": t_sched,      # the slot this read was scheduled for
+            "missed_slots": missed,     # slots skipped just before this read
+            "t_start_ns": t0,           # actual send, just before find_one
             "t_end_ns": t1,
             "latency_ns": t1 - t0,
             "observed_seq": doc.get("seq") if doc else None,
