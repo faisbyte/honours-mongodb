@@ -62,6 +62,7 @@ from pymongo.read_preferences import (Nearest, Primary, PrimaryPreferred,
                                       Secondary, SecondaryPreferred)
 
 from . import provenance
+from .wire import WireListener, causal_problem
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
@@ -175,6 +176,7 @@ class Target:
     read_interval_us: int = 500
     client: Any = field(default=None, repr=False)
     session: Any = field(default=None, repr=False)
+    wire: Any = field(default=None, repr=False)
     records: list = field(default_factory=list, repr=False)
 
     def pref(self):
@@ -208,6 +210,7 @@ def build_targets(cfg: dict, specs: list[dict] | None = None) -> list[Target]:
         else:
             raise ValueError(f"unknown target kind: {t.kind}")
 
+        t.wire = WireListener(f"target:{t.id}")
         t.client = MongoClient(
             uri,
             read_preference=t.pref(),
@@ -215,6 +218,7 @@ def build_targets(cfg: dict, specs: list[dict] | None = None) -> list[Target]:
             serverSelectionTimeoutMS=5000,
             maxPoolSize=1,
             minPoolSize=1,
+            event_listeners=[t.wire],
         )
         targets.append(t)
     return targets
@@ -330,7 +334,7 @@ def read_collection(t: Target, cfg: dict):
 
 
 def reader_loop(t: Target, stop: threading.Event, clock: WriteClock,
-                cfg: dict) -> None:
+                cfg: dict, fatal: list) -> None:
     key = cfg["workload"]["doc_key"]
     gap_ns = int(t.read_interval_us * 1e3)
     coll = read_collection(t, cfg)
@@ -364,9 +368,16 @@ def reader_loop(t: Target, stop: threading.Event, clock: WriteClock,
             except Exception:  # noqa: BLE001 - never kill the reader for this
                 causal_seq = None
 
+        # The driver has an afterClusterTime to send exactly when the session
+        # holds an operationTime. From then on, every causal read must carry
+        # one on the wire.
+        expect_act = (t.session is not None
+                      and t.session.operation_time is not None)
+
         err = None
         doc = None
         op_time_out = None
+        t.wire.begin()
         t0 = time.perf_counter_ns()
         try:
             doc = coll.find_one({"_id": key}, session=t.session)
@@ -375,6 +386,7 @@ def reader_loop(t: Target, stop: threading.Event, clock: WriteClock,
         except Exception as exc:  # noqa: BLE001 - failures are data
             err = f"{type(exc).__name__}: {exc}"
         t1 = time.perf_counter_ns()
+        sent = t.wire.last_find()
 
         t.records.append({
             "target": t.id,
@@ -388,8 +400,20 @@ def reader_loop(t: Target, stop: threading.Event, clock: WriteClock,
             "operationTime": {"t": op_time_out.time, "i": op_time_out.inc}
                              if op_time_out else None,
             "causal_waited_for_seq": causal_seq,
+            # readConcern exactly as the find command carried it on the wire
+            "read_concern_sent": sent["read_concern"] if sent else None,
+            "after_cluster_time_sent": (sent["after_cluster_time"]
+                                        if sent else None),
             "error": err,
         })
+
+        if t.session is not None:
+            problem = causal_problem(sent, expect_act, err)
+            if problem:
+                fatal.append(f"{t.id}: {problem}, read {len(t.records) - 1}; "
+                             f"the target is not reading causally")
+                stop.set()
+                return
 
 
 # --------------------------------------------------------------------------
@@ -409,13 +433,25 @@ def calibrate(targets: list[Target], cfg: dict, n: int = 500) -> dict:
         # targets, so the calibration covers what the run actually does.
         coll = read_collection(t, cfg)
         lat, errs = [], 0
-        for _ in range(n):
+        for i in range(n):
+            expect_act = (t.session is not None
+                          and t.session.operation_time is not None)
+            t.wire.begin()
             t0 = time.perf_counter_ns()
+            err = None
             try:
                 coll.find_one({"_id": key}, session=t.session)
                 lat.append(time.perf_counter_ns() - t0)
-            except Exception:  # noqa: BLE001
+            except Exception as exc:  # noqa: BLE001
                 errs += 1
+                err = str(exc)
+            if t.session is not None:
+                problem = causal_problem(t.wire.last_find(), expect_act, err)
+                if problem:
+                    raise SystemExit(f"[calibrate] {t.id}: {problem}, "
+                                     f"calibration read {i}. Aborting before "
+                                     f"collection: the target is not reading "
+                                     f"causally.")
         if lat:
             lat.sort()
             out[t.id] = {
@@ -459,9 +495,12 @@ def run(cfg: dict, cfg_path: Path, out_root: Path, do_calibrate: bool,
     print(f"[run] {run_dir}")
 
     targets = build_targets(cfg, specs)
+    writer_wire = WireListener("writer")
     rs_client = MongoClient(f"mongodb://{','.join(hosts)}/?replicaSet={rs_name}",
                             appname="freshness-writer",
-                            serverSelectionTimeoutMS=5000)
+                            serverSelectionTimeoutMS=5000,
+                            event_listeners=[writer_wire])
+    wires = [writer_wire] + [t.wire for t in targets]
 
     for t in targets:
         if t.causal_consistency:
@@ -472,11 +511,15 @@ def run(cfg: dict, cfg_path: Path, out_root: Path, do_calibrate: bool,
                     provenance.client_env())
     provenance.dump(run_dir / "provenance", "git.json",
                     provenance.git_state(REPO_ROOT))
-    provenance.dump(run_dir / "provenance", "nodes.json", [
-        provenance.node_info(
-            MongoClient(f"mongodb://{h}/?directConnection=true",
-                        serverSelectionTimeoutMS=5000), h)
-        for h in hosts])
+    node_infos = []
+    for h in hosts:
+        node_wire = WireListener(f"node:{h}")
+        wires.append(node_wire)
+        with MongoClient(f"mongodb://{h}/?directConnection=true",
+                         serverSelectionTimeoutMS=5000,
+                         event_listeners=[node_wire]) as node_client:
+            node_infos.append(provenance.node_info(node_client, h))
+    provenance.dump(run_dir / "provenance", "nodes.json", node_infos)
     provenance.dump(run_dir / "provenance", "repl_before.json",
                     provenance.repl_snapshot(rs_client))
     provenance.dump(run_dir / "provenance", "server_status_before.json",
@@ -499,6 +542,7 @@ def run(cfg: dict, cfg_path: Path, out_root: Path, do_calibrate: bool,
     stop = threading.Event()
     writes: list = []
     fatal: list = []
+    reader_fatal: list = []
 
     threads = [threading.Thread(target=writer_loop, name="writer",
                                 args=(stop, clock, writes, rs_client, cfg,
@@ -506,7 +550,8 @@ def run(cfg: dict, cfg_path: Path, out_root: Path, do_calibrate: bool,
                                 daemon=True)]
     for t in targets:
         threads.append(threading.Thread(target=reader_loop, name=f"r-{t.id}",
-                                        args=(t, stop, clock, cfg),
+                                        args=(t, stop, clock, cfg,
+                                              reader_fatal),
                                         daemon=True))
 
     duration = float(w["duration_s"])
@@ -532,6 +577,8 @@ def run(cfg: dict, cfg_path: Path, out_root: Path, do_calibrate: bool,
     if fatal:
         print(f"[run] WARNING the writer died and ended the run early: "
               f"{fatal[0]}")
+    for msg in reader_fatal:
+        print(f"[run] ABORTED {msg}")
 
     warmup_ns = int(w.get("warmup_s", 5) * 1e9)
     start_perf = anchor["perf_ns"]
@@ -557,6 +604,8 @@ def run(cfg: dict, cfg_path: Path, out_root: Path, do_calibrate: bool,
         "target": target_id,
         "round_index": round_index if round_index is not None else 1,
         "writer_fatal": fatal,
+        "reader_fatal": reader_fatal,
+        "wire": [wl.summary() for wl in wires],
         "started_utc": stamp,
         "finished_utc": datetime.now(timezone.utc).isoformat(),
         "clock_anchor": anchor,
@@ -585,6 +634,9 @@ def run(cfg: dict, cfg_path: Path, out_root: Path, do_calibrate: bool,
     provenance.write_checksums(run_dir)
     print(f"[run] done: {len(writes)} writes, "
           f"{sum(len(t.records) for t in targets)} reads -> {run_dir}")
+    if fatal or reader_fatal:
+        # Data and manifest are on disk; the exit status tells run_all.
+        raise SystemExit(f"[run] run ended early: {(fatal + reader_fatal)[0]}")
     return run_dir
 
 
