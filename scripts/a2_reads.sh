@@ -2,7 +2,6 @@
 cd "$(dirname "$0")/.." || exit 1
 source .venv/bin/activate
 
-CFG=config/a2-reads-w1.yaml
 UNCHAINED='[["27017","-"],["27018","27017"],["27019","27017"],["27020","27017"]]'
 
 topology() {
@@ -46,6 +45,6 @@ for round in 1 2; do
     set_jd $jd || exit 1
     check_topo || exit 1
     echo "=== round $round  journalDefault=$jd ==="
-    python -m harness.run_all --config $CFG --targets $TS --no-calibrate
+    python -m harness.run_all --config config/a2-reads-w1-jd$jd.yaml --targets $TS --no-calibrate
   done
 done

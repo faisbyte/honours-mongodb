@@ -24,7 +24,7 @@ for round in 1 2; do
     set_jd $jd || exit 1
     for j in $JS; do
       echo "=== round $round  journalDefault=$jd  $j ==="
-      python -m harness.run_all --config config/a2-$j.yaml --targets rs-primary-local --no-calibrate
+      python -m harness.run_all --config config/a2-$j-jd$jd.yaml --targets rs-primary-local --no-calibrate
     done
   done
 done

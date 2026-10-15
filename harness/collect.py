@@ -100,6 +100,59 @@ def check_workload(cfg: dict) -> None:
             f"run by this collector.")
 
 
+def check_expect_schema(cfg: dict) -> dict:
+    """The replica set state this config claims to measure.
+
+        expect:
+          topology: star             # or an explicit map, quoted, e.g.
+                                     # "27018<27020 27019<27020 27020<27017"
+          journal_default: true      # writeConcernMajorityJournalDefault
+          chaining_allowed: false    # optional; checked only if present
+
+    Required, because a run's condition is not only its write and read
+    concerns: topology and journal default change the result and are set
+    outside the harness. The live values are compared before the run folder
+    is created (check_expect); a mismatch refuses to start.
+    """
+    exp = cfg.get("expect")
+    problems = []
+    if not isinstance(exp, dict):
+        problems.append("there is no expect block")
+    else:
+        if not isinstance(exp.get("topology"), str):
+            problems.append("expect.topology must be a string")
+        if not isinstance(exp.get("journal_default"), bool):
+            problems.append("expect.journal_default must be true or false")
+        if ("chaining_allowed" in exp
+                and not isinstance(exp["chaining_allowed"], bool)):
+            problems.append("expect.chaining_allowed must be true or false")
+    if problems:
+        raise SystemExit(f"[config] {'; '.join(problems)}. See "
+                         f"check_expect_schema in harness/collect.py.")
+    return exp
+
+
+def check_expect(exp: dict, topo: dict) -> None:
+    """Refuse to start unless the live replica set matches the config."""
+    problems = []
+    if topo["label"] != exp["topology"]:
+        problems.append(f"topology is {topo['label']!r}, config expects "
+                        f"{exp['topology']!r}")
+    if topo["writeConcernMajorityJournalDefault"] is not exp["journal_default"]:
+        problems.append(f"writeConcernMajorityJournalDefault is "
+                        f"{topo['writeConcernMajorityJournalDefault']!r}, "
+                        f"config expects {exp['journal_default']!r}")
+    if ("chaining_allowed" in exp
+            and topo["chainingAllowed"] is not exp["chaining_allowed"]):
+        problems.append(f"chainingAllowed is {topo['chainingAllowed']!r}, "
+                        f"config expects {exp['chaining_allowed']!r}")
+    if topo.get("errors"):
+        problems.append(f"could not read replica set state: {topo['errors']}")
+    if problems:
+        raise SystemExit("[expect] refusing to start, no run folder created: "
+                         + "; ".join(problems))
+
+
 def select_specs(cfg: dict, mode: str, target_id: str | None) -> list[dict]:
     """Pick the target specs this process will read from."""
     ids = [s["id"] for s in cfg["targets"]]
@@ -477,10 +530,28 @@ def run(cfg: dict, cfg_path: Path, out_root: Path, do_calibrate: bool,
     rs_name = cfg["replica_set"]["name"]
 
     # Everything that can reject the invocation happens first, so a bad run
-    # never creates a directory or opens a connection.
+    # never creates a directory. Config problems are caught before any
+    # connection; a replica set that does not match expect is caught before
+    # the folder exists.
     check_workload(cfg)
     mode = resolve_mode(cfg)
     specs = select_specs(cfg, mode, target_id)
+    expect = check_expect_schema(cfg)
+
+    # Before the run folder exists, so the folder cannot mark the tree dirty.
+    git = provenance.git_state(REPO_ROOT)
+
+    writer_wire = WireListener("writer")
+    rs_client = MongoClient(f"mongodb://{','.join(hosts)}/?replicaSet={rs_name}",
+                            appname="freshness-writer",
+                            serverSelectionTimeoutMS=5000,
+                            event_listeners=[writer_wire])
+    topo_before = provenance.topology(rs_client)
+    try:
+        check_expect(expect, topo_before)
+    except SystemExit:
+        rs_client.close()
+        raise
 
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     parts = [stamp, cfg["experiment"]["name"]]
@@ -494,11 +565,6 @@ def run(cfg: dict, cfg_path: Path, out_root: Path, do_calibrate: bool,
     print(f"[run] {run_dir}")
 
     targets = build_targets(cfg, specs)
-    writer_wire = WireListener("writer")
-    rs_client = MongoClient(f"mongodb://{','.join(hosts)}/?replicaSet={rs_name}",
-                            appname="freshness-writer",
-                            serverSelectionTimeoutMS=5000,
-                            event_listeners=[writer_wire])
     wires = [writer_wire] + [t.wire for t in targets]
 
     for t in targets:
@@ -506,10 +572,11 @@ def run(cfg: dict, cfg_path: Path, out_root: Path, do_calibrate: bool,
             t.session = t.client.start_session(causal_consistency=True)
 
     shutil.copy(cfg_path, run_dir / "config.yaml")
-    provenance.dump(run_dir / "provenance", "client_env.json",
-                    provenance.client_env())
-    provenance.dump(run_dir / "provenance", "git.json",
-                    provenance.git_state(REPO_ROOT))
+    env = provenance.client_env()
+    provenance.dump(run_dir / "provenance", "client_env.json", env)
+    provenance.dump(run_dir / "provenance", "git.json", git)
+    provenance.dump(run_dir / "provenance", "topology_before.json",
+                    topo_before)
     node_infos = []
     for h in hosts:
         node_wire = WireListener(f"node:{h}")
@@ -591,6 +658,12 @@ def run(cfg: dict, cfg_path: Path, out_root: Path, do_calibrate: bool,
                 rec["warmup"] = (rec["t_start_ns"] - start_perf) < warmup_ns
                 fh.write(json.dumps(rec, default=str) + "\n")
 
+    topo_after = provenance.topology(rs_client)
+    power_after = provenance.power_source()["source"]
+    provenance.dump(run_dir / "provenance", "topology_after.json", topo_after)
+    if topo_after["label"] != topo_before["label"]:
+        print(f"[run] WARNING topology changed during the run: "
+              f"{topo_before['label']!r} -> {topo_after['label']!r}")
     provenance.dump(run_dir / "provenance", "repl_after.json",
                     provenance.repl_snapshot(rs_client))
     provenance.dump(run_dir / "provenance", "server_status_after.json",
@@ -608,6 +681,12 @@ def run(cfg: dict, cfg_path: Path, out_root: Path, do_calibrate: bool,
         "started_utc": stamp,
         "finished_utc": datetime.now(timezone.utc).isoformat(),
         "clock_anchor": anchor,
+        "expect": expect,
+        "topology": {"before": topo_before["label"],
+                     "after": topo_after["label"]},
+        "chaining_allowed": topo_before["chainingAllowed"],
+        "journal_default": topo_before["writeConcernMajorityJournalDefault"],
+        "power": {"before": env["power"], "after": power_after},
         "clock_note": ("All t_*_ns are time.perf_counter_ns() from one "
                        "process. Threads share that clock, so writer and "
                        "reader times are directly comparable with no skew. "

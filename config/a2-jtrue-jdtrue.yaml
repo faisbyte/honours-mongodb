@@ -4,7 +4,7 @@
 # the config inside a run directory is the record of what was measured.
 
 experiment:
-  name: a2-jtrue
+  name: a2-jtrue-jdtrue
   description: >
     Independent writer and reader threads, so reads land before, during and
     after each write. Covers the full causal consistency matrix from
@@ -17,6 +17,13 @@ replica_set:
     - "127.0.0.1:27018"
     - "127.0.0.1:27019"
     - "127.0.0.1:27020"
+
+expect:
+  # Checked against the live replica set before the run folder is
+  # created; a mismatch refuses to start. See check_expect_schema.
+  topology: star
+  journal_default: true
+  chaining_allowed: false
 
 workload:
   database: freshness

@@ -52,8 +52,22 @@ def git_state(repo_root: Path) -> dict:
     }
 
 
+def power_source() -> dict:
+    """Where the machine draws power from, via pmset -g batt (macOS).
+
+    source is "AC", "battery" or "unknown"; raw keeps the full command
+    output. Battery power can change CPU frequency and so the timings.
+    """
+    raw = _run(["pmset", "-g", "batt"])
+    out = raw.get("stdout", "") if isinstance(raw, dict) else ""
+    source = ("AC" if "AC Power" in out
+              else "battery" if "Battery Power" in out else "unknown")
+    return {"source": source, "raw": raw}
+
+
 def client_env() -> dict:
     import pymongo
+    power = power_source()
     return {
         "python": sys.version,
         "python_executable": sys.executable,
@@ -66,7 +80,8 @@ def client_env() -> dict:
         "tz": time.strftime("%Z%z"),
         "cwd": os.getcwd(),
         "sysctl_cpu": _run(["sysctl", "-n", "machdep.cpu.brand_string"]),
-        "power_source": _run(["pmset", "-g", "batt"]),  # macOS: thermal/perf state matters
+        "power": power["source"],
+        "power_source": power["raw"],  # macOS: thermal/perf state matters
         "clock_sync": _run(["sntp", "-d", "time.apple.com"]),
     }
 
@@ -82,9 +97,11 @@ def node_info(client, host: str) -> dict:
         "featureCompatibilityVersion": _safe(
             admin.command, {"getParameter": 1, "featureCompatibilityVersion": 1}),
         "writeConcernDefaults": _safe(admin.command, "getDefaultRWConcern"),
-        "wcMajorityJournalDefault": _safe(
-            admin.command, {"getParameter": 1,
-                            "writeConcernMajorityJournalDefault": 1}),
+        # A replica set config field, not a server parameter, so it is read
+        # from replSetGetConfig (getParameter fails with "no option found").
+        "writeConcernMajorityJournalDefault": _safe(
+            lambda: admin.command("replSetGetConfig")["config"].get(
+                "writeConcernMajorityJournalDefault")),
     }
 
 
@@ -95,6 +112,32 @@ def repl_snapshot(client) -> dict:
         "replSetGetStatus": _safe(admin.command, "replSetGetStatus"),
         "replSetGetConfig": _safe(admin.command, "replSetGetConfig"),
         "hello": _safe(admin.command, "hello"),
+    }
+
+
+def topology(client) -> dict:
+    """Who each member copies from, plus the settings that decide it.
+
+    Recorded before and after every run. label is the string compared with a
+    config's expect.topology and stored in runs/VALID.csv.
+    """
+    admin = client.admin
+    status = _safe(admin.command, "replSetGetStatus")
+    config = _safe(admin.command, "replSetGetConfig")
+    members = [{"name": m.get("name"), "stateStr": m.get("stateStr"),
+                "syncSourceHost": m.get("syncSourceHost") or ""}
+               for m in status.get("members", [])]
+    conf = config.get("config", {}) if "__error__" not in config else {}
+    return {
+        "captured_ns": time.time_ns(),
+        "members": members,
+        "label": topology_label(members),
+        "chainingAllowed": (conf.get("settings") or {}).get("chainingAllowed"),
+        "writeConcernMajorityJournalDefault": conf.get(
+            "writeConcernMajorityJournalDefault"),
+        "errors": {k: v["__error__"] for k, v in
+                   (("replSetGetStatus", status), ("replSetGetConfig", config))
+                   if "__error__" in v},
     }
 
 
