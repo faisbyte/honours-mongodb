@@ -54,14 +54,18 @@ def read_jsonl(run_dir: Path, name: str) -> pd.DataFrame:
         return pd.DataFrame(json.loads(x) for x in fh)
 
 
-def condition_of(manifest: dict) -> str:
-    wc = manifest["config"]["workload"]["write_concern"]
-    return f"w:{wc.get('w')}, j:{wc.get('j')}"
+def condition_of(run: runs.Run) -> str:
+    """A condition is the write concern plus the replica set state that also
+    changes the result: journal default and topology, both from VALID.csv.
+    Two runs differing in any of the four are never pooled."""
+    wc = run.manifest["config"]["workload"]["write_concern"]
+    return (f"w:{wc.get('w')}, j:{wc.get('j')}, "
+            f"jd:{run.row['journal_default']}, topology:{run.row['topology']}")
 
 
-def visibility_for_run(run_dir: Path):
-    manifest = json.loads((run_dir / "manifest.json").read_text())
-    cond = condition_of(manifest)
+def visibility_for_run(run: runs.Run):
+    run_dir = run.path
+    cond = condition_of(run)
     writes = read_jsonl(run_dir, "writes.jsonl")
     reads = read_jsonl(run_dir, "reads.jsonl")
 
@@ -150,9 +154,8 @@ def main() -> None:
 
     vis, acks, rls = [], [], []
     for run in sorted(runs.selected(args), key=lambda r: r.run_id):
-        d = run.path
-        print(f"[timings] {d.name}")
-        v, a, rl = visibility_for_run(d)
+        print(f"[timings] {run.run_id}")
+        v, a, rl = visibility_for_run(run)
         vis.append(v); acks.append(a); rls.append(rl)
 
     vis = pd.concat(vis, ignore_index=True)

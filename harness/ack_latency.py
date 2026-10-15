@@ -32,8 +32,8 @@ import pandas as pd
 from . import runs
 
 
-def load_writes(run_dir: Path) -> pd.DataFrame:
-    manifest = json.loads((run_dir / "manifest.json").read_text())
+def load_writes(run: runs.Run) -> pd.DataFrame:
+    run_dir, manifest = run.path, run.manifest
     wc = manifest["config"]["workload"]["write_concern"]["w"]
     name = manifest["config"]["experiment"]["name"]
 
@@ -44,6 +44,13 @@ def load_writes(run_dir: Path) -> pd.DataFrame:
 
     j = manifest["config"]["workload"]["write_concern"].get("j")
     df["write_concern"] = f"w:{wc}, j:{j}"
+    # Journal default and topology change ack latency as much as w and j do
+    # (the ~9 ms majority cost is the journal flush), so they are part of the
+    # condition. Both come from VALID.csv.
+    df["journal_default"] = run.row["journal_default"]
+    df["topology"] = run.row["topology"]
+    df["condition"] = (f"w:{wc}, j:{j}, jd:{run.row['journal_default']}, "
+                       f"topology:{run.row['topology']}")
     df["experiment"] = name
     df["run_id"] = run_dir.name
     return df
@@ -55,7 +62,7 @@ def main() -> None:
     ap.add_argument("--out", type=Path, default=None)
     args = ap.parse_args()
 
-    frames = [load_writes(r.path) for r in runs.selected(args)]
+    frames = [load_writes(r) for r in runs.selected(args)]
     df = pd.concat(frames, ignore_index=True)
 
     total = len(df)
@@ -65,7 +72,7 @@ def main() -> None:
           f"{len(df)} after dropping errors and warmup")
 
     q = [0.01, 0.10, 0.50, 0.90, 0.95, 0.99, 0.999]
-    summary = (df.groupby("write_concern")["latency_ms"]
+    summary = (df.groupby("condition")["latency_ms"]
                  .describe(percentiles=q)
                  .round(3))
     print(summary.to_string())
@@ -74,15 +81,16 @@ def main() -> None:
                        f"{datetime.now(timezone.utc):%Y%m%dT%H%M%SZ}__ack_latency")
     out.mkdir(parents=True, exist_ok=True)
     summary.to_csv(out / "ack_latency_summary.csv")
-    df[["run_id", "experiment", "write_concern", "seq",
-        "latency_ms"]].to_csv(out / "ack_latency_raw.csv", index=False)
+    df[["run_id", "experiment", "condition", "write_concern", "journal_default",
+        "topology", "seq", "latency_ms"]].to_csv(out / "ack_latency_raw.csv",
+                                                  index=False)
 
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4.5))
-    for wc, sub in df.groupby("write_concern"):
+    for wc, sub in df.groupby("condition"):
         lat = sub["latency_ms"].sort_values().to_numpy()
         n = len(lat)
         ax1.plot(lat, [i / n for i in range(n)], lw=1.5,
@@ -94,7 +102,7 @@ def main() -> None:
     ax1.set_ylabel("cumulative fraction of writes")
     ax1.set_title("CDF")
     ax1.grid(alpha=0.3)
-    ax1.legend(fontsize=8)
+    ax1.legend(fontsize=7)
 
     ax2.set_xscale("log")
     ax2.set_yscale("log")
@@ -102,7 +110,7 @@ def main() -> None:
     ax2.set_ylabel("count (log scale)")
     ax2.set_title("Distribution")
     ax2.grid(alpha=0.3)
-    ax2.legend(fontsize=8)
+    ax2.legend(fontsize=7)
 
     fig.tight_layout()
     fig.savefig(out / "ack_latency.png", dpi=160)
