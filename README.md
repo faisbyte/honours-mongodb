@@ -164,6 +164,8 @@ targets:
     read_preference: secondary
     read_concern: majority     # local | majority | linearizable | omitted
     causal_consistency: true
+    # max_time_ms: 5000        # required for linearizable, which must also be
+                               # kind replicaset, read_preference primary, not causal
 capture:
   compress_output: true
 analysis:

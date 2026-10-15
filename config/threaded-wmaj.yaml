@@ -1,4 +1,4 @@
-# Threaded collection, w:1.
+# Threaded collection, w:"majority".
 #
 # Copy this file to make a new condition. Never edit it to change a condition:
 # the config inside a run directory is the record of what was measured.
@@ -96,6 +96,16 @@ targets:
     read_preference: secondary
     read_concern: local
     causal_consistency: true
+
+  # Linearizable: primary only. Each read confirms with a majority that the
+  # primary is still primary, so it reflects every majority-acknowledged
+  # write that completed before the read started. max_time_ms bounds the
+  # wait if no majority is reachable.
+  - id: rs-primary-linearizable
+    kind: replicaset
+    read_preference: primary
+    read_concern: linearizable
+    max_time_ms: 5000
 
 capture:
   compress_output: true

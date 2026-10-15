@@ -153,6 +153,29 @@ def check_expect(exp: dict, topo: dict) -> None:
                          + "; ".join(problems))
 
 
+def check_targets(cfg: dict) -> None:
+    """Target combinations the server would reject or that would not measure
+    what their name says. Checked before any connection is opened."""
+    problems = []
+    for s in cfg["targets"]:
+        if s.get("read_concern") == "linearizable":
+            if s.get("read_preference") != "primary":
+                problems.append(f"{s['id']}: linearizable reads need "
+                                f"read_preference primary")
+            if s.get("kind") != "replicaset":
+                problems.append(f"{s['id']}: linearizable target must be "
+                                f"kind replicaset, so it follows the primary")
+            if s.get("causal_consistency"):
+                problems.append(f"{s['id']}: linearizable reads cannot carry "
+                                f"afterClusterTime; drop causal_consistency")
+            if not s.get("max_time_ms"):
+                problems.append(f"{s['id']}: give linearizable reads a "
+                                f"max_time_ms; they block while no majority "
+                                f"is reachable")
+    if problems:
+        raise SystemExit("[config] " + "; ".join(problems))
+
+
 def select_specs(cfg: dict, mode: str, target_id: str | None) -> list[dict]:
     """Pick the target specs this process will read from."""
     ids = [s["id"] for s in cfg["targets"]]
@@ -226,6 +249,7 @@ class Target:
     host: str | None = None
     causal_consistency: bool = False
     max_staleness_seconds: int | None = None
+    max_time_ms: int | None = None
     read_interval_us: int = 500
     client: Any = field(default=None, repr=False)
     session: Any = field(default=None, repr=False)
@@ -254,6 +278,7 @@ def build_targets(cfg: dict, specs: list[dict] | None = None) -> list[Target]:
             host=spec.get("host"),
             causal_consistency=bool(spec.get("causal_consistency", False)),
             max_staleness_seconds=spec.get("max_staleness_seconds"),
+            max_time_ms=spec.get("max_time_ms"),
             read_interval_us=spec.get("read_interval_us", default_gap),
         )
         if t.kind == "direct":
@@ -432,7 +457,8 @@ def reader_loop(t: Target, stop: threading.Event, clock: WriteClock,
         t.wire.begin()
         t0 = time.perf_counter_ns()
         try:
-            doc = coll.find_one({"_id": key}, session=t.session)
+            doc = coll.find_one({"_id": key}, session=t.session,
+                                max_time_ms=t.max_time_ms)
         except Exception as exc:  # noqa: BLE001 - failures are data
             err = f"{type(exc).__name__}: {exc}"
         t1 = time.perf_counter_ns()
@@ -492,7 +518,8 @@ def calibrate(targets: list[Target], cfg: dict, n: int = 500) -> dict:
             t0 = time.perf_counter_ns()
             err = None
             try:
-                coll.find_one({"_id": key}, session=t.session)
+                coll.find_one({"_id": key}, session=t.session,
+                              max_time_ms=t.max_time_ms)
                 lat.append(time.perf_counter_ns() - t0)
             except Exception as exc:  # noqa: BLE001
                 errs += 1
@@ -536,6 +563,7 @@ def run(cfg: dict, cfg_path: Path, out_root: Path, do_calibrate: bool,
     check_workload(cfg)
     mode = resolve_mode(cfg)
     specs = select_specs(cfg, mode, target_id)
+    check_targets(cfg)
     expect = check_expect_schema(cfg)
 
     # Before the run folder exists, so the folder cannot mark the tree dirty.
