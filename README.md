@@ -38,9 +38,10 @@ a config, one process per target, so reader threads never share a process
 (nine readers in one process inflate read latency about tenfold). Setting
 `workload.mode: concurrent` runs every target in one process instead.
 
-**Slots.** A slot that passed while the previous read was still in flight is
-skipped and counted (`missed_slots`), never made up, so slow reads do not
-cause bursts of back-to-back reads.
+**Slots.** Writer and reader each run on a fixed grid of slots. A slot that
+passed while the previous operation was still in flight is skipped and counted
+(`missed_slots`), never made up, so a slow write or read does not cause a
+burst of back-to-back operations.
 
 **One read path for every target.** Every target, and calibration, reads with
 `Collection.find_one` on a collection built with
@@ -210,6 +211,8 @@ gitignored.
 | field | meaning |
 |---|---|
 | `seq` | value written into the probe document |
+| `t_sched_ns` | the slot this write was scheduled for |
+| `missed_slots` | write slots skipped just before this write |
 | `t_start_ns`, `t_ack_ns` | `perf_counter_ns` just before sending and just after the ack |
 | `latency_ns` | `t_ack_ns - t_start_ns` |
 | `operationTime` | `{t, i}` from the reply |
@@ -249,7 +252,7 @@ writer and reader share a process on one host.
 |---|---|
 | none (v1) | write, wait for the ack, then poll every target in shuffled sweeps. All v1 runs are in `void/` |
 | 2 | independent writer and reader threads. Non-causal targets read through a raw `find` sent with `db.command`; causal targets through `find_one` after the fix in 0dc45cb |
-| 3 | every read through `find_one`; command listener with abort on missing `afterClusterTime`; reply `operationTime`; slot skipping; `expect` check; topology and power provenance |
+| 3 | every read through `find_one`; command listener with abort on missing `afterClusterTime`; reply `operationTime`; slot skipping for reads and writes; `expect` check; topology and power provenance |
 
 v2 and v3 read latencies come from different driver paths and are not directly
 comparable.

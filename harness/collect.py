@@ -323,10 +323,19 @@ def _writer_body(stop: threading.Event, clock: WriteClock, out: list,
     # The writer has its own session, touched only by this thread.
     session = rs_client.start_session(causal_consistency=True)
 
+    # Same slot rule as the reader: a write slot that has already passed when
+    # the writer is ready (the previous write overran it) is skipped and
+    # counted, never made up with back-to-back writes.
     seq = 0
-    next_at = time.perf_counter_ns()
+    next_at = time.perf_counter_ns() + interval_ns
     while not stop.is_set():
-        _spin_until(next_at)
+        missed = 0
+        now = time.perf_counter_ns()
+        if now > next_at:
+            missed = (now - next_at) // interval_ns + 1
+            next_at += missed * interval_ns
+        t_sched = next_at
+        _spin_until(t_sched)
         next_at += interval_ns
 
         cmd = {
@@ -356,6 +365,8 @@ def _writer_body(stop: threading.Event, clock: WriteClock, out: list,
 
         out.append({
             "seq": seq,
+            "t_sched_ns": t_sched,      # the slot this write was scheduled for
+            "missed_slots": missed,     # slots skipped just before this write
             "t_start_ns": t0,
             "t_ack_ns": t1,
             "latency_ns": t1 - t0,
