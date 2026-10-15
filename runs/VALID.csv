@@ -1,0 +1,73 @@
+run_id,config,topology,journal_default,power,include
+20260917T050155Z__threaded-wmaj__direct-27017,threaded-wmaj,27018<27020 27019<27020 27020<27017,true,battery,yes
+20260917T050458Z__threaded-wmaj__direct-27018,threaded-wmaj,27018<27020 27019<27020 27020<27017,true,battery,yes
+20260917T050802Z__threaded-wmaj__direct-27019,threaded-wmaj,27018<27020 27019<27020 27020<27017,true,battery,yes
+20260917T051105Z__threaded-wmaj__direct-27020,threaded-wmaj,27018<27020 27019<27020 27020<27017,true,battery,yes
+20260917T051409Z__threaded-wmaj__rs-primary-local,threaded-wmaj,27018<27020 27019<27020 27020<27017,true,battery,yes
+20260917T051712Z__threaded-wmaj__rs-secondary-local,threaded-wmaj,27018<27020 27019<27020 27020<27017,true,battery,yes
+20260917T052015Z__threaded-wmaj__rs-secondary-majority,threaded-wmaj,27018<27020 27019<27020 27020<27017,true,battery,yes
+20260917T053429Z__threaded-w1__direct-27017,threaded-w1,27018<27020 27019<27020 27020<27017,true,battery,yes
+20260917T053733Z__threaded-w1__direct-27018,threaded-w1,27018<27020 27019<27020 27020<27017,true,battery,yes
+20260917T054036Z__threaded-w1__direct-27019,threaded-w1,27018<27020 27019<27020 27020<27017,true,battery,yes
+20260917T054339Z__threaded-w1__direct-27020,threaded-w1,27018<27020 27019<27020 27020<27017,true,battery,yes
+20260917T054642Z__threaded-w1__rs-primary-local,threaded-w1,27018<27020 27019<27020 27020<27017,true,battery,yes
+20260917T054946Z__threaded-w1__rs-secondary-local,threaded-w1,27018<27020 27019<27020 27020<27017,true,battery,yes
+20260917T055249Z__threaded-w1__rs-secondary-majority,threaded-w1,27018<27020 27019<27020 27020<27017,true,battery,yes
+20260917T111403Z__threaded-w1__rs-secondary-causal-local,threaded-w1,star,true,battery,yes
+20260917T111706Z__threaded-w1__rs-secondary-causal-majority,threaded-w1,star,true,battery,yes
+20260917T115025Z__threaded-wmaj__rs-secondary-causal-local,threaded-wmaj,star,true,battery,yes
+20260917T115328Z__threaded-wmaj__rs-secondary-causal-majority,threaded-wmaj,star,true,battery,yes
+20260923T111936Z__threaded-wmaj__rs-primary-local,threaded-wmaj,star,true,battery,yes
+20260923T114209Z__threaded-wmaj-nojournal__rs-primary-local,threaded-wmaj-nojournal,star,true,battery,yes
+20261001T042854Z__threaded-w1-nochain__direct-27017,threaded-w1-nochain,star,true,AC,yes
+20261001T043157Z__threaded-w1-nochain__direct-27018,threaded-w1-nochain,star,true,AC,yes
+20261001T043501Z__threaded-w1-nochain__direct-27019,threaded-w1-nochain,star,true,AC,yes
+20261001T043804Z__threaded-w1-nochain__direct-27020,threaded-w1-nochain,star,true,AC,yes
+20261001T045952Z__threaded-w1-chain-sameday__direct-27017,threaded-w1-chain-sameday,star,true,AC,yes
+20261001T050256Z__threaded-w1-chain-sameday__direct-27018,threaded-w1-chain-sameday,star,true,AC,yes
+20261001T050559Z__threaded-w1-chain-sameday__direct-27019,threaded-w1-chain-sameday,star,true,AC,yes
+20261001T050903Z__threaded-w1-chain-sameday__direct-27020,threaded-w1-chain-sameday,star,true,AC,yes
+20261001T052431Z__a1-unchained__direct-27017,a1-unchained,star,true,AC,yes
+20261001T052603Z__a1-unchained__direct-27018,a1-unchained,star,true,AC,yes
+20261001T052735Z__a1-unchained__direct-27019,a1-unchained,star,true,AC,yes
+20261001T052907Z__a1-unchained__direct-27020,a1-unchained,star,true,AC,yes
+20261001T053052Z__a1-chained__direct-27017,a1-chained,27018<27020 27019<27020 27020<27017,true,AC,yes
+20261001T053224Z__a1-chained__direct-27018,a1-chained,27018<27020 27019<27020 27020<27017,true,AC,yes
+20261001T053357Z__a1-chained__direct-27019,a1-chained,27018<27020 27019<27020 27020<27017,true,AC,yes
+20261001T053529Z__a1-chained__direct-27020,a1-chained,27018<27020 27019<27020 27020<27017,true,AC,yes
+20261001T053704Z__a1-chained__direct-27017,a1-chained,27018<27020 27019<27020 27020<27017,true,AC,yes
+20261001T053836Z__a1-chained__direct-27018,a1-chained,27018<27020 27019<27020 27020<27017,true,AC,yes
+20261001T054008Z__a1-chained__direct-27019,a1-chained,27018<27020 27019<27020 27020<27017,true,AC,yes
+20261001T054141Z__a1-chained__direct-27020,a1-chained,27018<27020 27019<27020 27020<27017,true,AC,yes
+20261001T054325Z__a1-unchained__direct-27017,a1-unchained,star,true,AC,yes
+20261001T054457Z__a1-unchained__direct-27018,a1-unchained,star,true,AC,yes
+20261001T054630Z__a1-unchained__direct-27019,a1-unchained,star,true,battery,yes
+20261001T054802Z__a1-unchained__direct-27020,a1-unchained,star,true,battery,yes
+20261001T054935Z__a1-unchained__direct-27017,a1-unchained,star,true,battery,yes
+20261001T055107Z__a1-unchained__direct-27018,a1-unchained,star,true,battery,yes
+20261001T055239Z__a1-unchained__direct-27019,a1-unchained,star,true,battery,yes
+20261001T055411Z__a1-unchained__direct-27020,a1-unchained,star,true,battery,yes
+20261001T122123Z__a2-jnone__rs-primary-local,a2-jnone,star,true,battery,yes
+20261001T122426Z__a2-jfalse__rs-primary-local,a2-jfalse,star,true,battery,yes
+20261001T122730Z__a2-jtrue__rs-primary-local,a2-jtrue,star,true,battery,yes
+20261001T123044Z__a2-jnone__rs-primary-local,a2-jnone,star,false,battery,yes
+20261001T123347Z__a2-jfalse__rs-primary-local,a2-jfalse,star,false,battery,yes
+20261001T123651Z__a2-jtrue__rs-primary-local,a2-jtrue,star,false,battery,yes
+20261001T124005Z__a2-jtrue__rs-primary-local,a2-jtrue,star,false,battery,yes
+20261001T124308Z__a2-jfalse__rs-primary-local,a2-jfalse,star,false,battery,yes
+20261001T124612Z__a2-jnone__rs-primary-local,a2-jnone,star,false,battery,yes
+20261001T124927Z__a2-jtrue__rs-primary-local,a2-jtrue,star,true,battery,yes
+20261001T125230Z__a2-jfalse__rs-primary-local,a2-jfalse,star,true,battery,yes
+20261001T125534Z__a2-jnone__rs-primary-local,a2-jnone,star,true,battery,yes
+20261001T233044Z__a2-reads-w1__rs-secondary-majority,a2-reads-w1,star,true,battery,yes
+20261001T233216Z__a2-reads-w1__rs-secondary-causal-majority,a2-reads-w1,star,true,battery,yes
+20261001T233348Z__a2-reads-w1__rs-secondary-local,a2-reads-w1,star,true,battery,yes
+20261001T233532Z__a2-reads-w1__rs-secondary-majority,a2-reads-w1,star,false,battery,yes
+20261001T233704Z__a2-reads-w1__rs-secondary-causal-majority,a2-reads-w1,star,false,battery,yes
+20261001T233837Z__a2-reads-w1__rs-secondary-local,a2-reads-w1,star,false,battery,yes
+20261001T234021Z__a2-reads-w1__rs-secondary-local,a2-reads-w1,star,false,battery,yes
+20261001T234153Z__a2-reads-w1__rs-secondary-causal-majority,a2-reads-w1,star,false,battery,yes
+20261001T234325Z__a2-reads-w1__rs-secondary-majority,a2-reads-w1,star,false,battery,yes
+20261001T234509Z__a2-reads-w1__rs-secondary-local,a2-reads-w1,star,true,battery,yes
+20261001T234641Z__a2-reads-w1__rs-secondary-causal-majority,a2-reads-w1,star,true,battery,yes
+20261001T234813Z__a2-reads-w1__rs-secondary-majority,a2-reads-w1,star,true,battery,yes

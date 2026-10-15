@@ -32,16 +32,16 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+from harness import runs
+
 # ---------------------------------------------------------------------------
-# CONFIG: file paths and column names
+# CONFIG: run selection and column names
 # ---------------------------------------------------------------------------
-# The three runs behind the w:1 panel of the visibility plot (run folders under
-# the repo root). One run per read path, collected in isolated mode.
-RUNS = {
-    "rs-primary-local":      "measurements/20260917T054642Z__threaded-w1__rs-primary-local",
-    "rs-secondary-local":    "measurements/20260917T054946Z__threaded-w1__rs-secondary-local",
-    "rs-secondary-majority": "measurements/20260917T055249Z__threaded-w1__rs-secondary-majority",
-}
+# Runs come from runs/VALID.csv. By default: every included threaded-w1 run
+# with journal default ON, for the three paths below. Narrow it with the usual
+# selection flags (--topology, --run-id, ...). When several runs match one
+# path, each is processed on its own and the per-write times are pooled.
+SELECTION_DEFAULTS = {"config": ["threaded-w1"], "journal_default": "true"}
 ORDER = ["rs-primary-local", "rs-secondary-local", "rs-secondary-majority"]  # top to bottom
 
 LABELS = {
@@ -281,7 +281,7 @@ def draw(stats: dict, out_dir: Path) -> list[Path]:
 # ---------------------------------------------------------------------------
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--repo", type=Path, default=Path("."), help="repo root (default: current folder)")
+    runs.add_selection_args(ap, defaults={**SELECTION_DEFAULTS, "target": ORDER})
     ap.add_argument("--out", type=Path, default=Path("."), help="where to write the chart files")
     ap.add_argument("--force", action="store_true",
                     help="draw even if the write concern or journal default check fails")
@@ -289,15 +289,25 @@ def main() -> None:
 
     issues: list = []
     stats: dict = {}
+    chosen = runs.selected(args)
     print("Runs used:")
     for key in ORDER:
-        run_dir = args.repo / RUNS[key]
-        print(f"  {key:24s} {RUNS[key]}")
-        run = load_run(run_dir)
-        check_run(key, run, issues)
-        vis, counts = visibility_ms(run["writes"], run["reads"])
-        q = np.quantile(vis.to_numpy(), [0.5, 0.9])
-        stats[key] = {"median": float(q[0]), "p90": float(q[1]), "n": len(vis), **counts}
+        matched = [r for r in chosen if r.target == key]
+        if not matched:
+            raise SystemExit(f"no run in runs/VALID.csv matches the selection for {key}")
+        parts, totals = [], {}
+        for r in matched:
+            print(f"  {key:24s} {r.run_id}  topology={r.row['topology']}  power={r.row['power']}")
+            run = load_run(r.path)
+            check_run(key, run, issues)
+            vis_one, counts = visibility_ms(run["writes"], run["reads"])
+            parts.append(vis_one.to_numpy())
+            for k, v in counts.items():
+                totals[k] = totals.get(k, 0) + v
+        vis = np.concatenate(parts)
+        q = np.quantile(vis, [0.5, 0.9])
+        stats[key] = {"median": float(q[0]), "p90": float(q[1]), "n": len(vis),
+                      "runs": len(matched), **totals}
         if len(vis) < MIN_WRITES:
             issues.append(("warn", f"{key}: only {len(vis)} writes used (< {MIN_WRITES})"))
 

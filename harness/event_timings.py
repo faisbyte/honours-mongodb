@@ -23,8 +23,11 @@ Outputs, per write concern condition:
 Every run is processed on its own before anything is pooled, because
 perf_counter_ns timestamps from different processes share no epoch.
 
+Runs are selected from runs/VALID.csv, never by globbing measurements/.
+
 Usage:
-    python -m harness.event_timings measurements/2026*__threaded-*
+    python -m harness.event_timings --config threaded-w1 threaded-wmaj
+    python -m harness.event_timings --config a1-chained a1-unchained --out DIR
 """
 
 from __future__ import annotations
@@ -36,6 +39,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import pandas as pd
+
+from . import runs
 
 Q = [0.5, 0.9, 0.99]
 
@@ -139,14 +144,13 @@ def md_table(df: pd.DataFrame) -> str:
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("run_dirs", nargs="+", type=Path)
+    runs.add_selection_args(ap)
     ap.add_argument("--out", type=Path, default=None)
     args = ap.parse_args()
 
     vis, acks, rls = [], [], []
-    for d in sorted(args.run_dirs):
-        if not (d / "manifest.json").exists():
-            continue
+    for run in sorted(runs.selected(args), key=lambda r: r.run_id):
+        d = run.path
         print(f"[timings] {d.name}")
         v, a, rl = visibility_for_run(d)
         vis.append(v); acks.append(a); rls.append(rl)

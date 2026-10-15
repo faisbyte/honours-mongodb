@@ -12,9 +12,11 @@ a system property inferred from measurement, and it is the kind of input a
 WARS-style latency model (Bailis et al., PBS) or a simulation needs. Those need
 the shape and the tail, not an average.
 
+Runs are selected from runs/VALID.csv, never by globbing measurements/.
+
 Usage:
-    python -m harness.ack_latency measurements/2026*__threaded-w1__* \
-                                  measurements/2026*__threaded-wmaj__*
+    python -m harness.ack_latency --config threaded-w1 threaded-wmaj
+    python -m harness.ack_latency --config a2-jnone a2-jfalse a2-jtrue
 """
 
 from __future__ import annotations
@@ -26,6 +28,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import pandas as pd
+
+from . import runs
 
 
 def load_writes(run_dir: Path) -> pd.DataFrame:
@@ -47,12 +51,11 @@ def load_writes(run_dir: Path) -> pd.DataFrame:
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("run_dirs", nargs="+", type=Path)
+    runs.add_selection_args(ap)
     ap.add_argument("--out", type=Path, default=None)
     args = ap.parse_args()
 
-    frames = [load_writes(d) for d in args.run_dirs
-              if (d / "manifest.json").exists()]
+    frames = [load_writes(r.path) for r in runs.selected(args)]
     df = pd.concat(frames, ignore_index=True)
 
     total = len(df)

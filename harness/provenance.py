@@ -98,6 +98,29 @@ def repl_snapshot(client) -> dict:
     }
 
 
+def _port(host: str | None) -> str:
+    return host.rsplit(":", 1)[-1] if host else "-"
+
+
+def topology_label(members: list) -> str:
+    """One string naming who each secondary copies from.
+
+    "star" when every secondary syncs from the primary, otherwise the explicit
+    map, e.g. "27018<27020 27019<27020 27020<27017". A secondary with no sync
+    source shows as "<-". The same string is used in runs/VALID.csv and in a
+    config's expect.topology, so the two can be compared directly.
+    """
+    if not members:
+        return "unknown"
+    primary = [_port(m.get("name")) for m in members
+               if m.get("stateStr") == "PRIMARY"]
+    pairs = sorted((_port(m.get("name")), _port(m.get("syncSourceHost")))
+                   for m in members if m.get("stateStr") != "PRIMARY")
+    if len(primary) == 1 and all(src == primary[0] for _, src in pairs):
+        return "star"
+    return " ".join(f"{p}<{s}" for p, s in pairs)
+
+
 def server_status(client) -> dict:
     """Trimmed serverStatus. The full doc is enormous and mostly noise."""
     full = _safe(client.admin.command, "serverStatus")

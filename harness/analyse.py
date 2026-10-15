@@ -27,10 +27,12 @@ where W is the most recent write preceding R. Two anchors, both computed:
 
 LAG is (current write seq) minus (observed seq): how many writes behind.
 
+Runs are selected from runs/VALID.csv, never by globbing measurements/.
+
 Usage:
-    python -m harness.analyse measurements/<run_id>
-    python -m harness.analyse measurements/<run_id> --bucket-us 2000 --min-n 5
-    python -m harness.analyse measurements/<run_a> measurements/<run_b> ...
+    python -m harness.analyse --run-id <run_id>
+    python -m harness.analyse --run-id <run_id> --bucket-us 2000 --min-n 5
+    python -m harness.analyse --config threaded-w1 --topology star
 """
 
 from __future__ import annotations
@@ -43,6 +45,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import pandas as pd
+
+from . import runs
 
 
 def _read_jsonl(run_dir: Path, name: str) -> pd.DataFrame:
@@ -238,7 +242,7 @@ def load_run(run_dir: Path) -> tuple[dict, pd.DataFrame]:
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("run_dirs", type=Path, nargs="+")
+    runs.add_selection_args(ap)
     ap.add_argument("--out", type=Path, default=None,
                     help="where derived outputs go; defaults to "
                          "<run_dir>/derived for a single run and to "
@@ -247,7 +251,8 @@ def main() -> None:
     ap.add_argument("--min-n", type=int, default=None)
     args = ap.parse_args()
 
-    loaded = [load_run(d) for d in args.run_dirs]
+    run_dirs = [r.path for r in runs.selected(args, require_filter=True)]
+    loaded = [load_run(d) for d in run_dirs]
     manifests = [m for m, _ in loaded]
 
     # Isolated and concurrent runs are not the same measurement: concurrent
@@ -255,7 +260,7 @@ def main() -> None:
     # them would average two different experiments into one curve.
     if len({m["mode"] for m in manifests}) > 1:
         listing = "\n  ".join(f"{m['mode']:<10} {d}"
-                              for m, d in zip(manifests, args.run_dirs))
+                              for m, d in zip(manifests, run_dirs))
         raise SystemExit(f"[analyse] refusing to merge isolated and concurrent "
                          f"runs into one curve:\n  {listing}")
 
@@ -271,11 +276,11 @@ def main() -> None:
     df = pd.concat([d for _, d in loaded], ignore_index=True)
 
     if len(loaded) == 1:
-        out = args.out or (args.run_dirs[0] / "derived")
+        out = args.out or (run_dirs[0] / "derived")
     else:
         stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
         name = manifests[0]["config"]["experiment"]["name"]
-        out = args.out or (args.run_dirs[0].parent / "merged" /
+        out = args.out or (run_dirs[0].parent / "merged" /
                            f"{stamp}__{name}")
     out.mkdir(parents=True, exist_ok=True)
     df.to_parquet(out / "reads_joined.parquet", index=False)
@@ -285,7 +290,7 @@ def main() -> None:
                        "target": m.get("target"),
                        "round_index": m.get("round_index", 1),
                        "path": str(d)}
-                      for m, d in zip(manifests, args.run_dirs)]
+                      for m, d in zip(manifests, run_dirs)]
                      ).to_csv(out / "sources.csv", index=False)
 
     for anchor in ("ack", "start"):
