@@ -1,0 +1,12 @@
+{
+  "commit": "7ef826be13c3c289c26fb66e39c0feb7a80d1d97",
+  "dirty": true,
+  "dirty_files": [
+    "?? measurements/20261019T030223Z__threaded-wmaj__rs-secondary-causal-majority__r1/",
+    "?? measurements/20261019T030427Z__threaded-w1__direct-27017__r1/",
+    "?? measurements/20261019T030632Z__threaded-wmaj__rs-secondary-local__r1/",
+    "?? measurements/20261019T030836Z__threaded-w2__rs-primary-local__r1/",
+    "?? runs/plans/"
+  ],
+  "branch": "main"
+}

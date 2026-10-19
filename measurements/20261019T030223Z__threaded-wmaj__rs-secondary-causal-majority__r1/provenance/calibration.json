@@ -1,0 +1,12 @@
+{
+  "rs-secondary-causal-majority": {
+    "n": 500,
+    "errors": 0,
+    "min_ns": 102541,
+    "p50_ns": 132042,
+    "p95_ns": 191750,
+    "p99_ns": 347709,
+    "max_ns": 1002791,
+    "mean_ns": 148546.188
+  }
+}

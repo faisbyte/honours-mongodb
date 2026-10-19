@@ -1,0 +1,225 @@
+{
+  "run_id": "20261019T034155Z__threaded-w1__direct-27020__r2",
+  "harness_version": 3,
+  "read_path": "Collection.find_one for every target and calibration",
+  "mode": "isolated",
+  "target": "direct-27020",
+  "round_index": 2,
+  "writer_fatal": [],
+  "reader_fatal": [],
+  "wire": [
+    {
+      "client": "writer",
+      "commands": {
+        "replSetGetStatus": 4,
+        "replSetGetConfig": 4,
+        "hello": 2,
+        "serverStatus": 2,
+        "update": 1205
+      },
+      "read_concerns": {
+        "update level=None afterClusterTime=yes": 1203
+      }
+    },
+    {
+      "client": "target:direct-27020",
+      "commands": {
+        "find": 239356
+      },
+      "read_concerns": {
+        "find level=local afterClusterTime=no": 239356
+      }
+    },
+    {
+      "client": "node:127.0.0.1:27017",
+      "commands": {
+        "buildInfo": 1,
+        "hostInfo": 1,
+        "getCmdLineOpts": 1,
+        "getParameter": 1,
+        "getDefaultRWConcern": 1,
+        "replSetGetConfig": 1,
+        "endSessions": 1
+      },
+      "read_concerns": {}
+    },
+    {
+      "client": "node:127.0.0.1:27018",
+      "commands": {
+        "buildInfo": 1,
+        "hostInfo": 1,
+        "getCmdLineOpts": 1,
+        "getParameter": 1,
+        "getDefaultRWConcern": 1,
+        "replSetGetConfig": 1,
+        "endSessions": 1
+      },
+      "read_concerns": {}
+    },
+    {
+      "client": "node:127.0.0.1:27019",
+      "commands": {
+        "buildInfo": 1,
+        "hostInfo": 1,
+        "getCmdLineOpts": 1,
+        "getParameter": 1,
+        "getDefaultRWConcern": 1,
+        "replSetGetConfig": 1,
+        "endSessions": 1
+      },
+      "read_concerns": {}
+    },
+    {
+      "client": "node:127.0.0.1:27020",
+      "commands": {
+        "buildInfo": 1,
+        "hostInfo": 1,
+        "getCmdLineOpts": 1,
+        "getParameter": 1,
+        "getDefaultRWConcern": 1,
+        "replSetGetConfig": 1,
+        "endSessions": 1
+      },
+      "read_concerns": {}
+    }
+  ],
+  "started_utc": "20261019T034155Z",
+  "finished_utc": "2026-10-19T03:43:56.920135+00:00",
+  "clock_anchor": {
+    "wall_ns": 1792381315331677000,
+    "perf_ns": 101174634386541
+  },
+  "expect": {
+    "topology": "star",
+    "journal_default": true
+  },
+  "topology": {
+    "before": "star",
+    "after": "star"
+  },
+  "chaining_allowed": false,
+  "journal_default": true,
+  "power": {
+    "before": "battery",
+    "after": "battery"
+  },
+  "clock_note": "All t_*_ns are time.perf_counter_ns() from one process. Threads share that clock, so writer and reader times are directly comparable with no skew. wall = anchor.wall_ns + (t - anchor.perf_ns).",
+  "threading_note": "Writer and each reader run on their own thread with their own session. Causal readers copy the writer's operationTime and clusterTime out under a lock and advance their own session on their own thread, so no session is touched by two threads.",
+  "totals": {
+    "writes": 1204,
+    "reads": {
+      "direct-27020": 238856
+    }
+  },
+  "config": {
+    "experiment": {
+      "name": "threaded-w1",
+      "description": "Independent writer and reader threads, so reads land before, during and after each write. Covers the full causal consistency matrix from https://www.mongodb.com/docs/manual/core/causal-consistency-read-write-concerns/\n"
+    },
+    "replica_set": {
+      "name": "rs0",
+      "seed_hosts": [
+        "127.0.0.1:27017",
+        "127.0.0.1:27018",
+        "127.0.0.1:27019",
+        "127.0.0.1:27020"
+      ]
+    },
+    "expect": {
+      "topology": "star",
+      "journal_default": true
+    },
+    "workload": {
+      "database": "freshness",
+      "collection": "probe",
+      "doc_key": "probe-1",
+      "payload_bytes": 14,
+      "mode": "isolated",
+      "duration_s": 120,
+      "warmup_s": 5,
+      "write_interval_ms": 100,
+      "read_interval_us": 500,
+      "write_concern": {
+        "w": 1,
+        "j": null,
+        "wtimeout_ms": 5000
+      }
+    },
+    "targets": [
+      {
+        "id": "direct-27017",
+        "kind": "direct",
+        "host": "127.0.0.1:27017",
+        "read_preference": "secondaryPreferred",
+        "read_concern": "local"
+      },
+      {
+        "id": "direct-27018",
+        "kind": "direct",
+        "host": "127.0.0.1:27018",
+        "read_preference": "secondaryPreferred",
+        "read_concern": "local"
+      },
+      {
+        "id": "direct-27019",
+        "kind": "direct",
+        "host": "127.0.0.1:27019",
+        "read_preference": "secondaryPreferred",
+        "read_concern": "local"
+      },
+      {
+        "id": "direct-27020",
+        "kind": "direct",
+        "host": "127.0.0.1:27020",
+        "read_preference": "secondaryPreferred",
+        "read_concern": "local"
+      },
+      {
+        "id": "rs-primary-local",
+        "kind": "replicaset",
+        "read_preference": "primary",
+        "read_concern": "local"
+      },
+      {
+        "id": "rs-secondary-local",
+        "kind": "replicaset",
+        "read_preference": "secondary",
+        "read_concern": "local"
+      },
+      {
+        "id": "rs-secondary-majority",
+        "kind": "replicaset",
+        "read_preference": "secondary",
+        "read_concern": "majority"
+      },
+      {
+        "id": "rs-secondary-causal-majority",
+        "kind": "replicaset",
+        "read_preference": "secondary",
+        "read_concern": "majority",
+        "causal_consistency": true
+      },
+      {
+        "id": "rs-secondary-causal-local",
+        "kind": "replicaset",
+        "read_preference": "secondary",
+        "read_concern": "local",
+        "causal_consistency": true
+      },
+      {
+        "id": "rs-primary-linearizable",
+        "kind": "replicaset",
+        "read_preference": "primary",
+        "read_concern": "linearizable",
+        "max_time_ms": 5000
+      }
+    ],
+    "capture": {
+      "compress_output": true
+    },
+    "analysis": {
+      "bucket_us": 500,
+      "min_samples_per_bucket": 30
+    }
+  }
+}

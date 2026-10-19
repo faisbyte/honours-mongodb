@@ -1,0 +1,29 @@
+{
+  "captured_ns": 1792381187266198000,
+  "members": [
+    {
+      "name": "127.0.0.1:27017",
+      "stateStr": "PRIMARY",
+      "syncSourceHost": ""
+    },
+    {
+      "name": "127.0.0.1:27018",
+      "stateStr": "SECONDARY",
+      "syncSourceHost": "127.0.0.1:27017"
+    },
+    {
+      "name": "127.0.0.1:27019",
+      "stateStr": "SECONDARY",
+      "syncSourceHost": "127.0.0.1:27017"
+    },
+    {
+      "name": "127.0.0.1:27020",
+      "stateStr": "SECONDARY",
+      "syncSourceHost": "127.0.0.1:27017"
+    }
+  ],
+  "label": "star",
+  "chainingAllowed": false,
+  "writeConcernMajorityJournalDefault": true,
+  "errors": {}
+}

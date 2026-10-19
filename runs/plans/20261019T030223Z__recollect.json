@@ -1,0 +1,375 @@
+{
+  "created_utc": "2026-10-19T03:02:23.122752+00:00",
+  "seed": 1999558622,
+  "rounds": 2,
+  "shuffle": "random.Random(seed); one shuffle of range(n_cells) per round, in round order",
+  "cells": [
+    {
+      "index": 0,
+      "config": "threaded-w1",
+      "target": "direct-27017"
+    },
+    {
+      "index": 1,
+      "config": "threaded-w1",
+      "target": "direct-27018"
+    },
+    {
+      "index": 2,
+      "config": "threaded-w1",
+      "target": "direct-27019"
+    },
+    {
+      "index": 3,
+      "config": "threaded-w1",
+      "target": "direct-27020"
+    },
+    {
+      "index": 4,
+      "config": "threaded-w1",
+      "target": "rs-primary-local"
+    },
+    {
+      "index": 5,
+      "config": "threaded-w1",
+      "target": "rs-secondary-local"
+    },
+    {
+      "index": 6,
+      "config": "threaded-w1",
+      "target": "rs-secondary-majority"
+    },
+    {
+      "index": 7,
+      "config": "threaded-w1",
+      "target": "rs-secondary-causal-majority"
+    },
+    {
+      "index": 8,
+      "config": "threaded-w1",
+      "target": "rs-secondary-causal-local"
+    },
+    {
+      "index": 9,
+      "config": "threaded-w1",
+      "target": "rs-primary-linearizable"
+    },
+    {
+      "index": 10,
+      "config": "threaded-wmaj",
+      "target": "rs-primary-local"
+    },
+    {
+      "index": 11,
+      "config": "threaded-wmaj",
+      "target": "rs-primary-linearizable"
+    },
+    {
+      "index": 12,
+      "config": "threaded-wmaj",
+      "target": "rs-secondary-local"
+    },
+    {
+      "index": 13,
+      "config": "threaded-wmaj",
+      "target": "rs-secondary-majority"
+    },
+    {
+      "index": 14,
+      "config": "threaded-wmaj",
+      "target": "rs-secondary-causal-majority"
+    },
+    {
+      "index": 15,
+      "config": "threaded-wmaj",
+      "target": "rs-secondary-causal-local"
+    },
+    {
+      "index": 16,
+      "config": "threaded-w2",
+      "target": "rs-primary-local"
+    },
+    {
+      "index": 17,
+      "config": "threaded-w3",
+      "target": "rs-primary-local"
+    }
+  ],
+  "order": {
+    "1": [
+      {
+        "position": 1,
+        "cell": 14,
+        "config": "threaded-wmaj",
+        "target": "rs-secondary-causal-majority"
+      },
+      {
+        "position": 2,
+        "cell": 0,
+        "config": "threaded-w1",
+        "target": "direct-27017"
+      },
+      {
+        "position": 3,
+        "cell": 12,
+        "config": "threaded-wmaj",
+        "target": "rs-secondary-local"
+      },
+      {
+        "position": 4,
+        "cell": 16,
+        "config": "threaded-w2",
+        "target": "rs-primary-local"
+      },
+      {
+        "position": 5,
+        "cell": 6,
+        "config": "threaded-w1",
+        "target": "rs-secondary-majority"
+      },
+      {
+        "position": 6,
+        "cell": 10,
+        "config": "threaded-wmaj",
+        "target": "rs-primary-local"
+      },
+      {
+        "position": 7,
+        "cell": 4,
+        "config": "threaded-w1",
+        "target": "rs-primary-local"
+      },
+      {
+        "position": 8,
+        "cell": 2,
+        "config": "threaded-w1",
+        "target": "direct-27019"
+      },
+      {
+        "position": 9,
+        "cell": 5,
+        "config": "threaded-w1",
+        "target": "rs-secondary-local"
+      },
+      {
+        "position": 10,
+        "cell": 11,
+        "config": "threaded-wmaj",
+        "target": "rs-primary-linearizable"
+      },
+      {
+        "position": 11,
+        "cell": 7,
+        "config": "threaded-w1",
+        "target": "rs-secondary-causal-majority"
+      },
+      {
+        "position": 12,
+        "cell": 1,
+        "config": "threaded-w1",
+        "target": "direct-27018"
+      },
+      {
+        "position": 13,
+        "cell": 15,
+        "config": "threaded-wmaj",
+        "target": "rs-secondary-causal-local"
+      },
+      {
+        "position": 14,
+        "cell": 9,
+        "config": "threaded-w1",
+        "target": "rs-primary-linearizable"
+      },
+      {
+        "position": 15,
+        "cell": 8,
+        "config": "threaded-w1",
+        "target": "rs-secondary-causal-local"
+      },
+      {
+        "position": 16,
+        "cell": 17,
+        "config": "threaded-w3",
+        "target": "rs-primary-local"
+      },
+      {
+        "position": 17,
+        "cell": 13,
+        "config": "threaded-wmaj",
+        "target": "rs-secondary-majority"
+      },
+      {
+        "position": 18,
+        "cell": 3,
+        "config": "threaded-w1",
+        "target": "direct-27020"
+      }
+    ],
+    "2": [
+      {
+        "position": 1,
+        "cell": 6,
+        "config": "threaded-w1",
+        "target": "rs-secondary-majority"
+      },
+      {
+        "position": 2,
+        "cell": 3,
+        "config": "threaded-w1",
+        "target": "direct-27020"
+      },
+      {
+        "position": 3,
+        "cell": 7,
+        "config": "threaded-w1",
+        "target": "rs-secondary-causal-majority"
+      },
+      {
+        "position": 4,
+        "cell": 11,
+        "config": "threaded-wmaj",
+        "target": "rs-primary-linearizable"
+      },
+      {
+        "position": 5,
+        "cell": 9,
+        "config": "threaded-w1",
+        "target": "rs-primary-linearizable"
+      },
+      {
+        "position": 6,
+        "cell": 8,
+        "config": "threaded-w1",
+        "target": "rs-secondary-causal-local"
+      },
+      {
+        "position": 7,
+        "cell": 10,
+        "config": "threaded-wmaj",
+        "target": "rs-primary-local"
+      },
+      {
+        "position": 8,
+        "cell": 15,
+        "config": "threaded-wmaj",
+        "target": "rs-secondary-causal-local"
+      },
+      {
+        "position": 9,
+        "cell": 17,
+        "config": "threaded-w3",
+        "target": "rs-primary-local"
+      },
+      {
+        "position": 10,
+        "cell": 14,
+        "config": "threaded-wmaj",
+        "target": "rs-secondary-causal-majority"
+      },
+      {
+        "position": 11,
+        "cell": 0,
+        "config": "threaded-w1",
+        "target": "direct-27017"
+      },
+      {
+        "position": 12,
+        "cell": 4,
+        "config": "threaded-w1",
+        "target": "rs-primary-local"
+      },
+      {
+        "position": 13,
+        "cell": 1,
+        "config": "threaded-w1",
+        "target": "direct-27018"
+      },
+      {
+        "position": 14,
+        "cell": 16,
+        "config": "threaded-w2",
+        "target": "rs-primary-local"
+      },
+      {
+        "position": 15,
+        "cell": 2,
+        "config": "threaded-w1",
+        "target": "direct-27019"
+      },
+      {
+        "position": 16,
+        "cell": 13,
+        "config": "threaded-wmaj",
+        "target": "rs-secondary-majority"
+      },
+      {
+        "position": 17,
+        "cell": 12,
+        "config": "threaded-wmaj",
+        "target": "rs-secondary-local"
+      },
+      {
+        "position": 18,
+        "cell": 5,
+        "config": "threaded-w1",
+        "target": "rs-secondary-local"
+      }
+    ]
+  },
+  "preflight": {
+    "topology": "star",
+    "journal_default": true,
+    "chaining_allowed": false,
+    "nudge_dropped": true,
+    "power": "battery"
+  },
+  "git": {
+    "commit": "7ef826be13c3c289c26fb66e39c0feb7a80d1d97",
+    "dirty": false,
+    "dirty_files": [],
+    "branch": "main"
+  },
+  "configs": {
+    "threaded-w1": {
+      "sha256": "daf15a2270bb92ea3fe307a008f79c8a00f74c5ea7fed89a66de33ce270eb2b1",
+      "duration_s": 120,
+      "write_interval_ms": 100,
+      "write_concern": {
+        "w": 1,
+        "j": null,
+        "wtimeout_ms": 5000
+      }
+    },
+    "threaded-w2": {
+      "sha256": "a9d9e7f87561e55ad1b1336494f52068d03386a074505c089867e2495dabcdc1",
+      "duration_s": 120,
+      "write_interval_ms": 100,
+      "write_concern": {
+        "w": 2,
+        "j": null,
+        "wtimeout_ms": 5000
+      }
+    },
+    "threaded-w3": {
+      "sha256": "3e1384b00f77dee0fe3c30461358d5137bfde72b51c80a95e2dae1a45696bb9a",
+      "duration_s": 120,
+      "write_interval_ms": 100,
+      "write_concern": {
+        "w": 3,
+        "j": null,
+        "wtimeout_ms": 5000
+      }
+    },
+    "threaded-wmaj": {
+      "sha256": "e7e613f5185ec21988d28a98c4cfecae8ad89c7a08b8ea2594b50953c6c0f316",
+      "duration_s": 120,
+      "write_interval_ms": 100,
+      "write_concern": {
+        "w": "majority",
+        "j": null,
+        "wtimeout_ms": 5000
+      }
+    }
+  }
+}
