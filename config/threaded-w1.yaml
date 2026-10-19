@@ -35,7 +35,7 @@ workload:
   # thread in one process, which inflates read latency.
   mode: isolated
 
-  duration_s: 180           # seconds of collection per run, warmup included
+  duration_s: 120           # seconds of collection per run, warmup included
   warmup_s: 5               # discarded in analysis, still recorded on disk
   write_interval_ms: 100    # must exceed write latency, or writes overlap
   read_interval_us: 500     # gap between read slots in microseconds; 500 is 2,000 reads/s
