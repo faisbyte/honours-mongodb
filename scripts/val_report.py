@@ -1,6 +1,15 @@
-"""Report on the 60 s validation runs (configs *-val in runs/VALID.csv).
+"""Report on validation and re-collect runs.
 
-Usage, from anywhere:  .venv/bin/python scripts/val_report.py [selection flags]
+Usage, from anywhere:
+    .venv/bin/python scripts/val_report.py                  # the 15 Oct *-val runs
+    .venv/bin/python scripts/val_report.py --plan runs/plans/<stamp>__recollect.json
+    .venv/bin/python scripts/val_report.py [selection flags]
+
+--plan takes the runs that scripts/recollect.py completed for that plan (from
+its .progress.jsonl). With several runs per cell (rounds), two more sections
+appear: per-cell figures pooled across rounds, and round agreement, which
+flags a cell whose median read latency or median ack latency differs between
+rounds by more than 20% (larger / smaller - 1 > 0.20).
 
 Definitions
   warmup    reads and writes flagged warmup are excluded from every statistic
@@ -21,14 +30,41 @@ import argparse
 import gzip
 import json
 import sys
+from collections import defaultdict
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from harness import runs  # noqa: E402
 
 VAL = ["threaded-w1-val", "threaded-w2-val", "threaded-w3-val", "threaded-wmaj-val"]
+ROUND_TOLERANCE = 0.20
+
+
+def plan_run_ids(plan: Path) -> list[str]:
+    progress = plan.with_name(plan.name.replace(".json", ".progress.jsonl"))
+    if not progress.exists():
+        raise SystemExit(f"[report] no progress log next to {plan}")
+    done = [json.loads(line) for line in progress.read_text().splitlines()]
+    ids = [e["run_id"] for e in done if e["status"] == "ok"]
+    failed = [e for e in done if e["status"] != "ok"]
+    for e in failed:
+        print(f"[report] note: plan stopped at round {e['round']} position "
+              f"{e['position']}: {e['config']} {e['target']} (exit {e['rc']})")
+    if not ids:
+        raise SystemExit(f"[report] no completed runs in {progress}")
+    return ids
+
+
+def pct(a, q):
+    return round(float(np.quantile(a, q)) / 1e6, 3) if len(a) else None
+
+
+def rel_diff(a, b):
+    lo, hi = sorted((a, b))
+    return hi / lo - 1 if lo else float("inf")
 
 
 def jl(d, name):
@@ -71,12 +107,17 @@ def ts(x):
 
 def main():
     ap = argparse.ArgumentParser()
+    ap.add_argument("--plan", type=Path, default=None,
+                    help="a runs/plans/<stamp>__recollect.json; reports the runs it completed")
     runs.add_selection_args(ap, defaults={"config": VAL})
     args = ap.parse_args()
     args.include_excluded = True
+    if args.plan:
+        args.run_id = plan_run_ids(args.plan)
+        args.config = None
     chosen = runs.selected(args)
 
-    rows, wire, acks, opchecks = [], [], [], []
+    rows, wire, acks, opchecks, per_run = [], [], [], [], []
     for r in chosen:
         m, d = r.manifest, r.path
         w, rd = jl(d, "writes"), jl(d, "reads")
@@ -104,6 +145,14 @@ def main():
             c = r_ok[r_ok["causal_waited_for_seq"].notna()]
             diff = [ts(o) != wop.get(int(s)) for o, s in zip(c["operationTime"], c["causal_waited_for_seq"])]
             causal_diff = (sum(diff), len(diff))
+
+        per_run.append({"config": r.row["config"], "target": r.target,
+                        "round": m.get("round_index", 1),
+                        "read_ns": r_ok["latency_ns"].to_numpy(),
+                        "ack_ns": w_ok["latency_ns"].to_numpy(),
+                        "stale": stale, "stale_of": len(j),
+                        "r_missed": int(rd["missed_slots"].sum()),
+                        "w_missed": int(w["missed_slots"].sum())})
 
         rows.append({
             "run": r.run_id.split("__", 1)[0].replace("scratch/", ""),
@@ -166,8 +215,58 @@ def main():
     a = pd.DataFrame(acks)
     a = a[a["target"] == "rs-primary-local"]
     print(a.to_string(index=False))
-    print("\nall w:1 runs pooled:",
-          pd.DataFrame(acks).query("w == 1")[["n", "ack_p50_ms", "ack_p99_ms"]].to_string(index=False))
+
+    cells = defaultdict(list)
+    for x in per_run:
+        cells[(x["config"], x["target"])].append(x)
+    if any(len(v) > 1 for v in cells.values()):
+        print("\n== per cell, pooled across rounds (non-warmup; latencies in ms)\n")
+        out = []
+        for (cfg, tgt), xs in sorted(cells.items()):
+            rl = np.concatenate([x["read_ns"] for x in xs])
+            al = np.concatenate([x["ack_ns"] for x in xs])
+            st, of = sum(x["stale"] for x in xs), sum(x["stale_of"] for x in xs)
+            out.append({"config": cfg, "target": tgt, "runs": len(xs),
+                        "stale": st, "stale_rate": f"{st / of:.4%}" if of else None,
+                        "read_p50": pct(rl, .5), "read_p90": pct(rl, .9),
+                        "read_p99": pct(rl, .99),
+                        "ack_p50": pct(al, .5), "ack_p99": pct(al, .99),
+                        "r_missed": sum(x["r_missed"] for x in xs),
+                        "w_missed": sum(x["w_missed"] for x in xs)})
+        print(pd.DataFrame(out).to_string(index=False))
+
+        print(f"\n== round agreement: medians per round, flagged if they differ by "
+              f"more than {ROUND_TOLERANCE:.0%}\n")
+        out = []
+        for (cfg, tgt), xs in sorted(cells.items()):
+            by_round = defaultdict(list)
+            for x in xs:
+                by_round[x["round"]].append(x)
+            if len(by_round) < 2:
+                continue
+            rr = sorted(by_round)[:2]
+            med = {r_: (np.median(np.concatenate([x["read_ns"] for x in by_round[r_]])) / 1e6,
+                        np.median(np.concatenate([x["ack_ns"] for x in by_round[r_]])) / 1e6,
+                        sum(x["stale"] for x in by_round[r_])
+                        / max(1, sum(x["stale_of"] for x in by_round[r_])))
+                   for r_ in rr}
+            dr = rel_diff(med[rr[0]][0], med[rr[1]][0])
+            da = rel_diff(med[rr[0]][1], med[rr[1]][1])
+            out.append({"config": cfg, "target": tgt,
+                        f"read_p50_r{rr[0]}": round(med[rr[0]][0], 3),
+                        f"read_p50_r{rr[1]}": round(med[rr[1]][0], 3),
+                        "read_diff": f"{dr:.1%}",
+                        f"ack_p50_r{rr[0]}": round(med[rr[0]][1], 3),
+                        f"ack_p50_r{rr[1]}": round(med[rr[1]][1], 3),
+                        "ack_diff": f"{da:.1%}",
+                        f"stale_r{rr[0]}": f"{med[rr[0]][2]:.3%}",
+                        f"stale_r{rr[1]}": f"{med[rr[1]][2]:.3%}",
+                        "flag": "DIFFERS" if max(dr, da) > ROUND_TOLERANCE else ""})
+        agree = pd.DataFrame(out)
+        print(agree.to_string(index=False))
+        flagged = agree[agree["flag"] != ""] if len(agree) else agree
+        print(f"\n{len(flagged)} of {len(agree)} cells differ by more than "
+              f"{ROUND_TOLERANCE:.0%} between rounds")
 
 
 if __name__ == "__main__":
