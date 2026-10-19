@@ -43,21 +43,6 @@ VAL = ["threaded-w1-val", "threaded-w2-val", "threaded-w3-val", "threaded-wmaj-v
 ROUND_TOLERANCE = 0.20
 
 
-def plan_run_ids(plan: Path) -> list[str]:
-    progress = plan.with_name(plan.name.replace(".json", ".progress.jsonl"))
-    if not progress.exists():
-        raise SystemExit(f"[report] no progress log next to {plan}")
-    done = [json.loads(line) for line in progress.read_text().splitlines()]
-    ids = [e["run_id"] for e in done if e["status"] == "ok"]
-    failed = [e for e in done if e["status"] != "ok"]
-    for e in failed:
-        print(f"[report] note: plan stopped at round {e['round']} position "
-              f"{e['position']}: {e['config']} {e['target']} (exit {e['rc']})")
-    if not ids:
-        raise SystemExit(f"[report] no completed runs in {progress}")
-    return ids
-
-
 def pct(a, q):
     return round(float(np.quantile(a, q)) / 1e6, 3) if len(a) else None
 
@@ -113,7 +98,7 @@ def main():
     args = ap.parse_args()
     args.include_excluded = True
     if args.plan:
-        args.run_id = plan_run_ids(args.plan)
+        args.run_id = runs.plan_run_ids(args.plan)
         args.config = None
     chosen = runs.selected(args)
 

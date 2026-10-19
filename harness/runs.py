@@ -188,6 +188,27 @@ def selected(args: argparse.Namespace, require_filter: bool = False) -> list[Run
     return out
 
 
+def plan_run_ids(plan: Path) -> list[str]:
+    """Run ids that scripts/recollect.py completed for one plan.
+
+    Read from the .progress.jsonl next to the plan file. Prints where the plan
+    stopped, if it did.
+    """
+    plan = Path(plan)
+    progress = plan.with_name(plan.name.replace(".json", ".progress.jsonl"))
+    if not progress.exists():
+        raise SystemExit(f"[runs] no progress log next to {plan}")
+    done = [json.loads(line) for line in progress.read_text().splitlines()]
+    for e in done:
+        if e["status"] != "ok":
+            print(f"[runs] note: plan stopped at round {e['round']} position "
+                  f"{e['position']}: {e['config']} {e['target']} (exit {e['rc']})")
+    ids = [e["run_id"] for e in done if e["status"] == "ok"]
+    if not ids:
+        raise SystemExit(f"[runs] no completed runs in {progress}")
+    return ids
+
+
 # --------------------------------------------------------------------------
 # CLI
 # --------------------------------------------------------------------------
