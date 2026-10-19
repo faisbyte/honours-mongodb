@@ -93,6 +93,7 @@ class FakeColl:
         # Older than any writer opTime the tests publish, so a session's
         # running maximum and the reply's own operationTime differ.
         reply_ot = Timestamp(500, c.req)
+        c.replies[c.req] = reply_ot   # ground truth for the operationTime checks
         reply = {"cursor": {"firstBatch": [c.doc]}, "ok": 1.0,
                  "operationTime": reply_ot}
         if session is not None:
@@ -105,6 +106,7 @@ class FakeColl:
 class FakeClient:
     def __init__(self, latency_s=0.0002, listeners=(), drop_act=False):
         self.calls, self.req = [], 0
+        self.replies = {}
         self.latency_s = latency_s
         self.listeners = list(listeners)
         self.drop_act = drop_act
@@ -279,6 +281,18 @@ def test_optime():
         extra = f", session holds {t.session.operation_time}" if t.session is not None else ""
         check(ok, f"{t.id}: operationTime is the reply's (t=500) on all "
               f"{len(recs)} reads{extra}")
+        if t.causal_consistency:
+            truth = t.client.replies
+            same = all(r["request_id"] in truth
+                       and (r["operationTime"]["t"], r["operationTime"]["i"])
+                       == (truth[r["request_id"]].time, truth[r["request_id"]].inc)
+                       for r in recs)
+            logged = {x["request_id"]: (x["operationTime"]["t"], x["operationTime"]["i"])
+                      for x in t.wire.replies()}
+            check(same and logged == {k: (v.time, v.inc) for k, v in truth.items()},
+                  f"{t.id}: each read's operationTime is the reply the driver "
+                  f"sent for its request_id, and the listener logged all "
+                  f"{len(logged)} replies")
 
 
 def test_writer_schedule():
@@ -438,6 +452,32 @@ def test_e2e():
               f"target wire log: {tw['read_concerns']}")
         check(all(r["after_cluster_time_sent"] for r in reads),
               "every collected causal read carried afterClusterTime")
+
+        import importlib.util
+        import pandas as pd
+        spec = importlib.util.spec_from_file_location(
+            "val_report", REPO / "scripts" / "val_report.py")
+        vr = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(vr)
+        reps = _jl(run_dir, "find_replies")
+        rdf, pdf = pd.DataFrame(reads), pd.DataFrame(reps)
+        res = vr.optime_check(rdf, pdf)
+        check(res["status"] == "PASS" and res["matched"] == len(reads),
+              f"val_report optime_check on the run: {res['status']}, "
+              f"{res['equal']}/{res['reads']} equal, {len(reps)} replies logged")
+        bad = rdf.copy()
+        bad.at[bad.index[100], "operationTime"] = {"t": 1, "i": 1}
+        check(vr.optime_check(bad, pdf)["status"] == "FAIL",
+              "optime_check fails when one recorded operationTime is altered")
+        # The log also holds the calibration reads' replies (not in reads.jsonl),
+        # so drop the reply belonging to an actual collected read.
+        gone = rdf["request_id"].iloc[100]
+        check(vr.optime_check(rdf, pdf[pdf["request_id"] != gone])["status"] == "FAIL",
+              "optime_check fails when a read's reply is missing from the log")
+        bad = rdf.copy()
+        bad.at[bad.index[10], "request_id"] = None
+        check(vr.optime_check(bad, pdf)["status"] == "FAIL",
+              "optime_check fails when one read has no request_id")
     finally:
         shutil.rmtree(out)
 

@@ -10,6 +10,12 @@ Definitions
   causal    share of reads whose recorded operationTime differs from the
   opTime    writer's opTime for causal_waited_for_seq (the write the session
             was advanced to before that read)
+  operationTime check
+            for causal targets, every read that returned without error must
+            carry a request_id, that request_id must appear exactly once in
+            the listener's own reply log (find_replies.jsonl), and the read's
+            recorded operationTime must equal that reply's. Runs collected
+            before find_replies.jsonl existed show "not recorded".
 """
 import argparse
 import gzip
@@ -30,6 +36,35 @@ def jl(d, name):
         return pd.DataFrame(json.loads(line) for line in fh)
 
 
+def jl_optional(d, name):
+    return jl(d, name) if (d / f"{name}.jsonl.gz").exists() else None
+
+
+def optime_check(reads: pd.DataFrame, replies) -> dict:
+    """Recorded operationTime against the listener's reply for the same request.
+
+    reads: the run's read records. replies: find_replies records for the same
+    target, or None if the run predates them.
+    """
+    r = reads[reads["error"].isna()]
+    if replies is None or "request_id" not in r.columns:
+        return {"reads": len(r), "status": "not recorded", "pass": None}
+    ids = [int(x) for x in replies["request_id"]]
+    by_id = dict(zip(ids, (ts(o) for o in replies["operationTime"])))
+    no_id = int(r["request_id"].isna().sum())
+    matched = equal = 0
+    for rid, op in zip(r["request_id"], r["operationTime"]):
+        if pd.isna(rid) or int(rid) not in by_id:
+            continue
+        matched += 1
+        equal += ts(op) == by_id[int(rid)]
+    n = len(r)
+    ok = n > 0 and no_id == 0 and matched == n and equal == n and len(by_id) == len(ids)
+    return {"reads": n, "no_request_id": no_id, "matched": matched, "equal": equal,
+            "duplicate_reply_ids": len(ids) - len(by_id),
+            "status": "PASS" if ok else "FAIL", "pass": ok}
+
+
 def ts(x):
     return (x["t"], x["i"]) if isinstance(x, dict) else None
 
@@ -41,7 +76,7 @@ def main():
     args.include_excluded = True
     chosen = runs.selected(args)
 
-    rows, wire, acks = [], [], []
+    rows, wire, acks, opchecks = [], [], [], []
     for r in chosen:
         m, d = r.manifest, r.path
         w, rd = jl(d, "writes"), jl(d, "reads")
@@ -55,6 +90,13 @@ def main():
                           right_on="t_ack_ns", direction="backward")
         j = j.dropna(subset=["seq"])
         stale = int((j["observed_seq"].fillna(-1) < j["seq"]).sum())
+
+        if r.target.startswith("rs-secondary-causal"):
+            reps = jl_optional(d, "find_replies")
+            if reps is not None:
+                reps = reps[reps["target"] == r.target]
+            opchecks.append({"run": r.run_id, "target": r.target,
+                             **optime_check(rd, reps)})
 
         causal_diff = None
         if m["config"]["targets"][0].get("causal_consistency") or r.target.startswith("rs-secondary-causal"):
@@ -112,6 +154,12 @@ def main():
         if x["causal_diff"]:
             k, n = x["causal_diff"]
             print(f"{x['config']} {x['target']}: differs on {k}/{n} reads ({k / n:.1%})")
+    print("\n== operationTime check: causal reads against the listener's reply "
+          "for the same request_id\n")
+    if opchecks:
+        print(pd.DataFrame(opchecks).drop(columns="pass").to_string(index=False))
+    else:
+        print("no causal runs selected")
     print("\n== stale reads and median read latency\n")
     print(df[["config", "target", "stale", "stale_of", "read_p50_ms"]].to_string(index=False))
     print("\n== write ack latency, primary-local runs (non-warmup)\n")

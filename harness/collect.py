@@ -489,6 +489,9 @@ def reader_loop(t: Target, stop: threading.Event, clock: WriteClock,
             # maximum, which the reader has just advanced to the writer's.
             "operationTime": sent["reply_operation_time"] if sent else None,
             "causal_waited_for_seq": causal_seq,
+            # The find's request id, to match this read to the listener's own
+            # log of replies (find_replies.jsonl).
+            "request_id": sent["request_id"] if sent else None,
             # readConcern exactly as the find command carried it on the wire
             "read_concern_sent": sent["read_concern"] if sent else None,
             "after_cluster_time_sent": (sent["after_cluster_time"]
@@ -703,6 +706,12 @@ def run(cfg: dict, cfg_path: Path, out_root: Path, do_calibrate: bool,
     if topo_after["label"] != topo_before["label"]:
         print(f"[run] WARNING topology changed during the run: "
               f"{topo_before['label']!r} -> {topo_after['label']!r}")
+    # The listener's log of every find reply, independent of the read records.
+    with (run_dir / "find_replies.jsonl").open("w") as fh:
+        for t in targets:
+            for rep in t.wire.replies():
+                fh.write(json.dumps({"target": t.id, **rep}) + "\n")
+
     provenance.dump(run_dir / "provenance", "repl_after.json",
                     provenance.repl_snapshot(rs_client))
     provenance.dump(run_dir / "provenance", "server_status_after.json",
@@ -741,7 +750,7 @@ def run(cfg: dict, cfg_path: Path, out_root: Path, do_calibrate: bool,
     })
 
     if cap.get("compress_output"):
-        for name in ("writes.jsonl", "reads.jsonl"):
+        for name in ("writes.jsonl", "reads.jsonl", "find_replies.jsonl"):
             p = run_dir / name
             if p.exists():
                 with p.open("rb") as src, gzip.open(str(p) + ".gz", "wb") as dst:

@@ -34,6 +34,9 @@ class WireListener(monitoring.CommandListener):
         self._lock = threading.Lock()
         self._commands: collections.Counter = collections.Counter()
         self._read_concerns: collections.Counter = collections.Counter()
+        # Every find reply, in arrival order, kept apart from the per-read
+        # records so the two can be checked against each other afterwards.
+        self._replies: list[dict] = []
 
     # -- per read ----------------------------------------------------------
 
@@ -74,12 +77,21 @@ class WireListener(monitoring.CommandListener):
         # operationTime is the read's own, not the session's running maximum.
         if event.command_name != "find":
             return
+        op = ts_doc(event.reply.get("operationTime"))
+        with self._lock:
+            self._replies.append({"request_id": event.request_id,
+                                  "operationTime": op})
         sent = getattr(self._local, "sent", None)
         if sent is not None and sent["request_id"] == event.request_id:
-            sent["reply_operation_time"] = ts_doc(event.reply.get("operationTime"))
+            sent["reply_operation_time"] = op
 
     def failed(self, event: monitoring.CommandFailedEvent) -> None:
         pass
+
+    def replies(self) -> list[dict]:
+        """Every find reply seen: {"request_id", "operationTime": {t, i}}."""
+        with self._lock:
+            return list(self._replies)
 
     # -- manifest ----------------------------------------------------------
 

@@ -187,6 +187,8 @@ measurements/<UTC stamp>__<experiment>__<target>[__r<round>]/
 │                               writer_fatal, reader_fatal, resolved config
 ├── writes.jsonl.gz             one record per write
 ├── reads.jsonl.gz              one record per read
+├── find_replies.jsonl.gz       the command listener's own log of every find reply:
+│                               target, request_id, operationTime
 ├── checksums.txt               sha256 of every file
 └── provenance/
     ├── client_env.json         python, pymongo, OS, CPU, power source, clock sync
@@ -231,6 +233,7 @@ gitignored.
 | `latency_ns` | `t_end_ns - t_start_ns` |
 | `observed_seq`, `observed_wall_ns` | from the document returned, or null |
 | `operationTime` | `{t, i}` from this read's own reply |
+| `request_id` | the find's request id; joins to `find_replies.jsonl` |
 | `causal_waited_for_seq` | causal targets: the write whose timestamps the session was advanced to |
 | `read_concern_sent` | `readConcern.level` as sent |
 | `after_cluster_time_sent` | `readConcern.afterClusterTime` as sent, `{t, i}` or null |
